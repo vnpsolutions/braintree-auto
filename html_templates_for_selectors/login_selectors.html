@@ -1,0 +1,232 @@
+<html lang="en" class=" js flexbox no-touch history rgba multiplebgs backgroundsize borderradius boxshadow textshadow opacity cssanimations cssgradients csstransforms csstransitions fontface svg svgclippaths cookies" style=""><!--<![endif]--><head><meta http-equiv="origin-trial" content="A7vZI3v+Gz7JfuRolKNM4Aff6zaGuT7X0mf3wtoZTnKv6497cVMnhy03KDqX7kBz/q/iidW7srW31oQbBt4VhgoAAACUeyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGUuY29tOjQ0MyIsImZlYXR1cmUiOiJEaXNhYmxlVGhpcmRQYXJ0eVN0b3JhZ2VQYXJ0aXRpb25pbmczIiwiZXhwaXJ5IjoxNzU3OTgwODAwLCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ==">
+    <title>Braintree Gateway Login | PayPal Braintree</title>
+  
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Braintree Gateway Login | PayPal Braintree">
+    <meta property="og:description" content="Log in to your Braintree account here or find out how you can log in with your PayPal account">
+    <meta name="”description”" content="”Log" in="" to="" your="" braintree="" account="" here="" or="" find="" out="" how="" you="" can="" log="" with="" paypal="" account”="">
+    <meta name="csrf-param" content="authenticity_token">
+  <meta name="csrf-token" content="rVasBtXrAdMjZEwAJ4irYJ8OXuM6QL_lBrZcQbRjCx8hjshm0770RzTg99ybYrAENGkNVZ8G8nlwcWs1AVQ0-Q">
+  
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://gstatic.braintreegateway.com/assets/application-d24bcdf605217d59c40892ebe4a664eb2ecb4f3db6fed18acc2529c8326376e2.css" media="screen">
+  
+    <!-- JS -->
+    <script type="text/javascript" async="" charset="utf-8" src="https://www.gstatic.com/recaptcha/releases/44LqIOwVrGhp2lJ3fODa493O/recaptcha__en.js" crossorigin="anonymous" integrity="sha384-81KiK8GhWyH80MsZl1vdzmMYc0XQX9aDGqEfT0ckWF5GLPX10rwo5y8vjpybBo6f"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/pa/mi/paypal/latmconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktgtagmanager.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/pa/mi/paypal/latmconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktgtagmanager.js"></script><script src="https://gstatic.braintreegateway.com/assets/bundle.vendor-1973740cf34e864780ccd09f0b1ff9c05f625ab1ee5e97da6b716c6b41d15c2d.js"></script>
+    <script src="https://gstatic.braintreegateway.com/assets/bundle-7e3babc2b39313b8b47f0906c32c8cbd95ce4242874d0ccd0e46d8c0762c7c75.js"></script>
+  
+    <!-- FPTI Client-Side Analytics -->
+      <script src="https://www.paypalobjects.com/pa/js/min/pa.js"></script>
+  
+    <!-- Cookie banner -->
+    <script type="application/json" id="policy-data">
+    {
+      "policies": ["CookieBanner"],
+      "tenant": "braintree",
+      "policyData": { "country":"US", "language":"en" }, "tenantData" : {"cookieDomain":".braintreegateway.com"}
+    }
+  </script>
+  <script src="https://www.paypalobjects.com/ncs/ncs.js"></script><script id="cookieMapping" src="https://www.paypalobjects.com/ncs/braintree/mapping.js"></script>
+  
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="https://gstatic.braintreegateway.com/paypal_braintree_favicon.ico">
+  
+    <!-- FPTI Client-Side Analytics -->
+      <script src="https://www.paypalobjects.com/pa/js/min/pa.js"></script>
+  
+  </head>
+  
+  <body lang="en" class="no-nav login-body unified-panel">
+    <div data-js="notification-alert">
+        
+  <div class="alert success">
+    
+  </div>
+  
+  
+  <script src="https://gstatic.braintreegateway.com/assets/make_alert_closeable-fca879a01a30d19db7b98828cb87fb43c99fb63dacc5a50cb32c3bc38a93545b.js"></script>
+  
+  <script type="text/javascript">
+    $(document).on(".unified-panel [data-js=closable-alert-button]", function(el){
+      var $alert = $(el).closest(".alert");
+  
+      $(el).click(function() {
+        $alert.remove();
+      });
+  
+      setTimeout(function() {
+        $alert.remove();
+      }, 10000);
+    });
+  
+    var alertsContainer = $("#flash-banner");
+  
+    var showAlert = function(alertHtml){
+      var $alert = $(alertHtml);
+  
+      alertsContainer.prepend($alert);
+  
+      return $alert;
+    };
+  
+    window.AlertNotification = {
+      removeAll: function(){
+        return alertsContainer.find(".alert").remove();
+      },
+  
+      showSuccess: function(message){
+        var alertHtml = "\n<div class=\"alert success\">\n  <div class=\"detail\">\n    <h6>Success<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showErrorToast: function(message){
+        var alertHtml = "\n<div class=\"alert error_toast\">\n  <div class=\"detail\">\n    <h6>Error_toast<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showNotice: function(message){
+        var alertHtml = "\n<div class=\"alert notice\">\n  <div class=\"detail\">\n    <h6>Notice<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showError: function(message){
+        var alertHtml = "\n<div class=\"alert error\">\n  <div class=\"detail\">\n    <h6>Error<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+    };
+  </script>
+  
+    </div>
+    <noscript>
+      <div class='alert error'>
+          <div class='detail'>
+          <h6>Error</h6>
+          <p>You need JavaScript enabled to use this application.</p>
+        </div>
+      </div>
+    </noscript>
+  
+    <header class="unified-login__header">
+    <a href="/" class="logo" pa-marked="1">
+      <h1 class="logo_alt_text">PayPal Braintree</h1>
+    </a>
+    <nav class="unified-login__nav">
+      <ul>
+        <li>
+          <a href="https://help.braintreepayments.com/" target="_blank" pa-marked="1">Get Help</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  
+    
+  <script src="https://www.google.com/recaptcha/api.js" async="" defer=""></script>
+  
+  <script src="https://gstatic.braintreegateway.com/assets/unlink_opener-beff92660b28014236c922336f2b4eb59e48751123b07dce8e525361a24db5b4.js"></script>
+  
+  <script>
+  //<![CDATA[
+    let loginAnalytics = new PaypalAnalytics(
+      'main:gateway:login',
+      'main:gateway:login',
+      'not_available',
+      'login',
+      'not_available'
+    );
+    $(document).ready(function() {
+      loginAnalytics.setupPaypalAnalytics();
+    });
+  
+  //]]>
+  </script>
+  <main class="unified-login__content">
+    <div class="wrapper">
+      <h2 class="unified-login__title">
+        Log in
+      </h2>
+  
+      <form class="form no_autocomplete" action="/session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="rVasBtXrAdMjZEwAJ4irYJ8OXuM6QL_lBrZcQbRjCx8hjshm0770RzTg99ybYrAENGkNVZ8G8nlwcWs1AVQ0-Q" autocomplete="off"></div>      <label class="input-field">
+    <label for="login" class="">
+      Username
+    </label>
+    <div class="input-field__wrapper input-field--with-tooltip-addon">
+      <input autocomplete="username" autofocus="" class=" " type="text" id="login" name="login" value="" placeholder="" required="" tabindex="">
+        <div class="input-field__addon">
+            <div class="bt-tooltip-container vertical-align-middle">
+              <span class="bt-tooltip-trigger noblock">
+                <!--?xml version="1.0" encoding="utf-8"?-->
+  <svg class="info-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve" focusable="false">
+    <circle class="info-icon__background" cx="10" cy="10" r="10" style="fill-rule:evenodd;clip-rule:evenodd;"></circle>
+    <g>
+      <rect class="info-icon__foreground" x="9.2" y="5" width="1.7" height="1.7"></rect>
+      <polygon class="info-icon__foreground" points="10.8,12.5 10.8,9.2 10.8,7.5 9.2,7.5 7.9,7.5 7.9,9.2 9.2,9.2 9.2,12.5 9.2,14.2 10.8,14.2 12.1,14.2 12.1,12.5 "></polygon>
+    </g>
+  </svg>
+  
+              </span>
+              <div class="bt-tooltip right zero" style="min-width: 300px;">
+                A username can be either:
+              <ul>
+                <li>A unique identifier designated by you at signup (e.g. yourusername100)</li>
+                <li>The email you signed up with (e.g. example@email.com)</li>
+              </ul>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+  </label>
+  
+  
+        <label class="input-field">
+    <label for="password" class="">
+      Password
+    </label>
+    <div class="input-field__wrapper input-field--with-addon">
+      <input autocomplete="current-password" autofocus="" class=" " type="password" id="password" name="password" value="" placeholder="" required="" tabindex="">
+        <div class="input-field__addon">
+            <a id="forgot-password-link" tabindex="-1" href="/forgot_password" pa-marked="1">Forgot</a>
+        </div>
+    </div>
+    <div>
+    </div>
+  </label>
+  
+  
+  
+        <input type="submit" name="commit" value="Log In" class="btn btn_primary btn_full_width login-submit-button" onclick="loginAnalytics.trackClick('login')" pa-marked="1">
+  </form>
+      <div class="unified-login__divider">or</div>
+  
+      <a class="activate-login-with-paypal btn btn_full_width login-with-paypal-button" href="https://www.paypal.com/signin/authorize?client_id=AQnRNmwKLyKURzmUN7IGrYNIcaXKc2xMhjj5iRgXQHmRlL_yWgRRlEyHvtUn0wfkT0394HGHKlldnkFl&amp;redirect_uri=https%3A%2F%2Fwww.braintreegateway.com%2Flogin_with_paypal_redirect&amp;response_type=code&amp;scope=openid+email&amp;state=login-OlVFF0RZCjHyKS8Ona1vd1SlDEw6Q42U43PQaeJZ3tu2jSF3Qgz_peWtlNIhR3QT_8Jf-p8FwAiVtOcdV27hPQ-%2Flogin" onclick="loginAnalytics.trackClick('login_with_paypal')" rel="noopener" pa-marked="1">
+        Log In with PayPal
+      </a>
+  
+      <footer>
+    <p>
+      Want to access Braintree using your PayPal account? <a href="https://developer.paypal.com/braintree/articles/control-panel/users-roles/managing-users-roles#log-in-with-paypal" target="_blank" pa-marked="1">Learn more</a>
+    </p>
+  
+    <p>
+      Looking for your test environment?
+      <a href="https://sandbox.braintreegateway.com" pa-marked="1">
+        Log into Sandbox
+      </a>
+  </p>
+  
+  
+      <p>Using your corporate domain credentials? <a href="https://id.braintreegateway.com/sso/sessions/new" pa-marked="1">Log in with SSO</a></p>
+  
+  </footer>
+  
+    </div>
+  </main>
+  
+  
+  
+  </body></html>

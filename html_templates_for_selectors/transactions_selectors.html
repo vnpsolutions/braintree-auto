@@ -1,0 +1,2694 @@
+<html lang="en" class=" js flexbox no-touch history rgba multiplebgs backgroundsize borderradius boxshadow textshadow opacity cssanimations cssgradients csstransforms csstransitions fontface svg svgclippaths cookies" style=""><!--<![endif]--><head>
+    <title>Transaction Search - PayPal Braintree Gateway</title>
+  
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="csrf-param" content="authenticity_token">
+  <meta name="csrf-token" content="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg">
+  
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://gstatic.braintreegateway.com/assets/application-d24bcdf605217d59c40892ebe4a664eb2ecb4f3db6fed18acc2529c8326376e2.css" media="screen">
+    <link rel="stylesheet" href="https://gstatic.braintreegateway.com/assets/print-3c13e06d536c586f777c851c8f286a899ecb9b666d3261bb3b2b0c16384eceee.css" media="print">
+  
+    <!-- JS -->
+    <script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/pa/mi/paypal/latmconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktgtagmanager.js"></script><script src="https://gstatic.braintreegateway.com/assets/bundle.vendor-1973740cf34e864780ccd09f0b1ff9c05f625ab1ee5e97da6b716c6b41d15c2d.js"></script>
+    <script src="https://gstatic.braintreegateway.com/assets/bundle-7e3babc2b39313b8b47f0906c32c8cbd95ce4242874d0ccd0e46d8c0762c7c75.js"></script>
+  
+    <!-- FPTI Client-Side Analytics -->
+      <script src="https://www.paypalobjects.com/pa/js/min/pa.js"></script>
+  
+    <!-- UNIFIED DASHBOARD FAVICON -->
+    <link rel="icon" type="image/x-icon" href="https://gstatic.braintreegateway.com/paypal_braintree_favicon.ico">
+  
+    <script type="application/json" id="policy-data">
+    {
+      "policies": ["CookieBanner"],
+      "tenant": "braintree",
+      "policyData": { "country":"US", "language":"en" }, "tenantData" : {"cookieDomain":".braintreegateway.com"}
+    }
+  </script>
+  <script src="https://www.paypalobjects.com/ncs/ncs.js"></script><script id="cookieMapping" src="https://www.paypalobjects.com/ncs/braintree/mapping.js"></script>
+  
+  </head>
+  <body lang="en" class="transaction_search_show bt unified-panel   ">
+        
+  
+  
+  
+  <header class="unified-panel-header unified-panel-header--main" data-js="scrollable-fixed-nav">
+    <div class="unified-panel-header__primary">
+      <div class="unified-panel-header__icon">
+          <a class="unified-panel-header__icon-link" href="/merchants/24z4n6rn88tvynbq/home" pa-marked="1">
+        <!--?xml version="1.0" encoding="utf-8"?-->
+  <!-- Generator: Adobe Illustrator 27.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 518.28 106.97" style="enable-background:new 0 0 518.28 106.97;" xml:space="preserve" data-test-id="bt-brand-refresh-logo-icon">
+  <style type="text/css">
+    .st0{fill:#FFFFFF;}
+  </style>
+  <g>
+    <g>
+      <path class="st0" d="M286.05,72.43h10.81c7.24,0,15.57-1.68,15.57-11.08c0-5.89-4.33-8.7-7.62-9.68c2.97-0.97,5.84-3.78,5.84-8.32
+        c0-7.57-5.62-9.57-16.65-9.57h-7.95c-0.81,0-1.24,0.43-1.24,1.24v36.16C284.81,72,285.24,72.43,286.05,72.43z M291.57,49.35v-9.57
+        h4.7c4.43,0,7.51,0.65,7.51,4.59c0,3.68-2.27,4.76-6.54,4.97H291.57z M291.57,66.49V55.24h6c4.54,0,8,1.35,8,5.57
+        c0,4.97-4.38,5.68-9.95,5.68H291.57z"></path>
+      <path class="st0" d="M317.66,72.43h4.11c0.81,0,1.24-0.43,1.24-1.24V59.03c0-5.84,1.19-9.51,5.4-9.51c0.86,0,1.3,0.16,1.73,0.16
+        c0.65,0,0.92-0.49,0.92-1.14v-3.89c0-0.97-0.65-1.3-1.68-1.3c-3.24,0-5.89,1.62-6.86,4.49c0.05-0.59,0.05-1.24,0.05-1.89V45.3
+        c0-0.81-0.43-1.24-1.24-1.24h-3.73c-0.81,0-1.19,0.43-1.19,1.24v25.89C316.42,72,316.85,72.43,317.66,72.43z"></path>
+      <path class="st0" d="M341.42,72.97c4.6,0,7.84-2,9.41-4.32c0,1.03,0.05,1.95,0.16,2.65c0.05,0.76,0.54,1.14,1.3,1.14h3.57
+        c0.76,0,1.19-0.22,1.19-0.81c0-0.27-0.11-0.7-0.16-1.08c-0.22-1.89-0.33-3.78-0.33-6.92v-7.95c0-9.68-4.81-12.54-11.73-12.54
+        c-6.43,0-10.54,3.19-11.78,7.51c-0.11,0.38-0.27,0.97-0.27,1.35c0,0.59,0.33,0.92,1.19,0.92h3.84c0.76,0,1.14-0.38,1.35-1.14
+        c0.6-2.11,2.32-3.51,5.51-3.51c3.73,0,5.41,1.78,5.51,6.49c-0.33,0.05-4.11,0.38-6.49,0.76c-6.05,0.86-12.38,3.08-12.38,9.03
+        C331.31,69.89,335.53,72.97,341.42,72.97z M343.26,68.27c-2.97,0-4.92-1.3-4.92-3.89c0-3.03,3.3-4.05,10.49-4.87l1.46-0.16
+        c-0.05,0.54-0.05,1.14-0.05,1.19C350.23,65.35,348.02,68.27,343.26,68.27z"></path>
+      <path class="st0" d="M362.91,39.94h4.27c0.81,0,1.24-0.43,1.24-1.24v-3.68c0-0.81-0.43-1.24-1.24-1.24h-4.27
+        c-0.81,0-1.24,0.43-1.24,1.24v3.68C361.66,39.51,362.1,39.94,362.91,39.94z M363.02,72.43h4.11c0.81,0,1.24-0.43,1.24-1.24V45.3
+        c0-0.81-0.43-1.24-1.24-1.24h-4.11c-0.81,0-1.24,0.43-1.24,1.24v25.89C361.77,72,362.21,72.43,363.02,72.43z"></path>
+      <path class="st0" d="M375.11,72.43h4.11c0.81,0,1.24-0.43,1.24-1.24v-14.6c0-4.43,1.95-7.95,6.43-7.95c4.43,0,5.78,3.57,5.78,9.14
+        v13.41c0,0.81,0.43,1.24,1.24,1.24h4.11c0.81,0,1.24-0.43,1.24-1.24V54.81c0-7.3-3.78-11.68-10.27-11.68
+        c-4.38,0-7.14,1.89-8.86,4.49c-0.05,0-0.05,0-0.05-0.05c0-0.59,0.05-1.19,0.05-1.78V45.3c0-0.81-0.43-1.24-1.24-1.24h-3.84
+        c-0.81,0-1.24,0.43-1.19,1.24v25.89C373.87,72,374.3,72.43,375.11,72.43z"></path>
+      <path class="st0" d="M414.92,72.97c1.51,0,2.49-0.05,2.49-1.41v-2.54c0-0.97-0.38-1.3-1.08-1.3c-0.38,0-0.54,0.05-1.08,0.05
+        c-1.95,0-2.76-0.86-2.76-3.51v-15.3h4.05c0.81,0,1.24-0.43,1.24-1.24V45.3c0-0.81-0.43-1.24-1.24-1.24h-4.05v-6.43
+        c0-0.81-0.43-1.24-1.24-1.24h-4.11c-0.81,0-1.24,0.43-1.24,1.24v6.43h-3.03c-0.81,0-1.24,0.43-1.24,1.24v2.43
+        c0,0.81,0.43,1.24,1.24,1.24h3.03V65.3C405.89,71.24,409.19,72.97,414.92,72.97z"></path>
+      <path class="st0" d="M422.16,72.43h4.11c0.81,0,1.24-0.43,1.24-1.24V59.03c0-5.84,1.19-9.51,5.41-9.51c0.86,0,1.3,0.16,1.73,0.16
+        c0.65,0,0.92-0.49,0.92-1.14v-3.89c0-0.97-0.65-1.3-1.68-1.3c-3.24,0-5.89,1.62-6.86,4.49c0.05-0.59,0.05-1.24,0.05-1.89V45.3
+        c0-0.81-0.43-1.24-1.24-1.24h-3.73c-0.81,0-1.19,0.43-1.19,1.24v25.89C420.91,72,421.34,72.43,422.16,72.43z"></path>
+      <path class="st0" d="M450.57,73.3c6.33,0,10.6-3.24,12.54-7.14c0.38-0.76,0.38-0.92,0.38-1.08c0-0.43-0.49-0.76-1.19-0.76h-4.11
+        c-0.65,0-1.08,0.27-1.51,0.81c-1.24,1.68-3.19,2.7-5.95,2.7c-4.6,0-7.73-3.35-8.16-8l20.49,0.05c0.76,0,1.3-0.43,1.3-1.24v-0.54
+        c0-8.27-4.81-15.03-13.89-15.03c-8.65,0-14.49,6.43-14.49,15.08C435.97,67.03,441.7,73.3,450.57,73.3z M442.78,55.13
+        c0.54-4.49,3.51-6.92,7.62-6.92c4.22,0,6.92,3.03,7.35,6.92H442.78z"></path>
+      <path class="st0" d="M480.61,73.3c6.32,0,10.6-3.24,12.54-7.14c0.38-0.76,0.38-0.92,0.38-1.08c0-0.43-0.49-0.76-1.19-0.76h-4.11
+        c-0.65,0-1.08,0.27-1.51,0.81c-1.24,1.68-3.19,2.7-5.95,2.7c-4.6,0-7.73-3.35-8.16-8l20.49,0.05c0.76,0,1.3-0.43,1.3-1.24v-0.54
+        c0-8.27-4.81-15.03-13.89-15.03c-8.65,0-14.49,6.43-14.49,15.08C466.01,67.03,471.74,73.3,480.61,73.3z M472.83,55.13
+        c0.54-4.49,3.51-6.92,7.62-6.92c4.22,0,6.92,3.03,7.35,6.92H472.83z"></path>
+    </g>
+    <g>
+      <path class="st0" d="M117.85,47.23c-0.42,2.68-2.49,4.65-6.45,4.65h-5.06l1.53-9.73h4.97C116.94,42.15,118.27,44.56,117.85,47.23
+         M112.13,60.03c7.26,0,13.42-5.3,14.55-12.47c1.14-7.24-4.52-13.55-12.53-13.57h-12.91c-0.5,0-0.92,0.36-1,0.85l-5.76,36.54
+        c-0.09,0.57,0.35,1.08,0.92,1.08h6.83c0.5,0,0.92-0.36,1-0.85l1.69-10.73c0.08-0.49,0.5-0.85,1-0.85H112.13z"></path>
+      <path class="st0" d="M146.76,59.34c-0.57,3.59-3.51,6.23-7.29,6.23c-0.74,0-1.43-0.1-2.04-0.3v0c-2.8-0.9-4.39-3.59-3.94-6.5
+        c0.57-3.59,3.52-6.23,7.29-6.23c0.75,0,1.43,0.1,2.04,0.3v0C145.63,53.73,147.22,56.42,146.76,59.34 M156.29,45.51h-6.49
+        c-0.5,0-0.92,0.36-1,0.85l-0.21,1.35c0,0-5.04-5.5-13.95-1.79c-5.11,2.13-7.57,6.54-8.61,9.75c0,0-3.32,9.8,4.18,15.18
+        c0,0,6.95,5.18,14.78-0.32l-0.14,0.86c-0.09,0.57,0.35,1.08,0.92,1.08h6.49c0.5,0,0.92-0.36,1-0.85l3.95-25.03
+        C157.3,46.02,156.86,45.51,156.29,45.51"></path>
+      <path class="st0" d="M211.27,47.23c-0.42,2.68-2.49,4.65-6.45,4.65h-5.06l1.53-9.73h4.97C210.36,42.15,211.7,44.56,211.27,47.23
+         M205.56,60.03c7.26,0,13.42-5.3,14.55-12.47c1.14-7.24-4.52-13.55-12.53-13.57h-12.91c-0.5,0-0.92,0.36-1,0.85l-5.76,36.54
+        c-0.09,0.57,0.35,1.08,0.92,1.08h6.83c0.5,0,0.92-0.36,1-0.85l1.69-10.73c0.08-0.49,0.5-0.85,1-0.85H205.56z"></path>
+      <path class="st0" d="M240.18,59.34c-0.57,3.59-3.51,6.23-7.29,6.23c-0.74,0-1.43-0.1-2.04-0.3v0c-2.8-0.9-4.39-3.59-3.94-6.5
+        c0.57-3.59,3.52-6.23,7.29-6.23c0.75,0,1.43,0.1,2.04,0.3v0C239.05,53.73,240.64,56.42,240.18,59.34 M249.71,45.51h-6.49
+        c-0.5,0-0.92,0.36-1,0.85l-0.21,1.35c0,0-5.04-5.5-13.95-1.79c-5.11,2.13-7.57,6.54-8.61,9.75c0,0-3.32,9.8,4.18,15.18
+        c0,0,6.95,5.18,14.78-0.32l-0.14,0.86c-0.09,0.57,0.35,1.08,0.92,1.08h6.49c0.5,0,0.92-0.36,1-0.85l3.95-25.03
+        C250.73,46.02,250.29,45.51,249.71,45.51"></path>
+      <path class="st0" d="M180.1,46.12l-7.82,13.2l-3.97-13.1c-0.13-0.43-0.52-0.72-0.97-0.72h-7.06c-0.51,0-0.88,0.5-0.72,0.99
+        l7.11,22.07l-6.43,10.4c-0.31,0.5,0.05,1.16,0.65,1.16h7.6c0.44,0,0.85-0.23,1.08-0.61l19.86-32.86c0.31-0.5-0.06-1.15-0.65-1.15
+        h-7.6C180.74,45.51,180.33,45.74,180.1,46.12"></path>
+      <path class="st0" d="M257.01,34.84l-5.76,36.54c-0.09,0.57,0.35,1.08,0.92,1.08h6.83c0.5,0,0.92-0.36,1-0.85l5.76-36.54
+        c0.09-0.57-0.35-1.08-0.92-1.08h-6.83C257.51,33.99,257.09,34.35,257.01,34.84"></path>
+      <g>
+        <path class="st0" d="M41.87,35.35c0.13-0.84,0.85-1.45,1.7-1.45h14.98c2.72,0,5.32,0.19,7.34,1.23
+          c0.03-7.59-6.73-13.21-14.56-13.17H33.2c-0.84,0.04-1.61,0.66-1.75,1.58l-7.54,47.73c-0.19,0.98,0.56,1.8,1.47,1.8H35.9
+          L41.87,35.35z"></path>
+        <path class="st0" d="M42.41,53.02l2.26-14.32c0.12-0.76,0.55-1.52,1.54-1.52h12.64c2.4,0.02,4.94,0.24,6.81,1.22
+          c-0.01,0.54-0.06,1.41-0.14,1.97c-1.14,7.28-7.39,12.65-14.76,12.65H42.41z"></path>
+        <path class="st0" d="M68.74,40.13c-0.03,0.65-0.07,1.23-0.16,1.86c-1.29,8.24-8.46,14.32-16.8,14.32H43.5
+          c-0.92,0-1.71,0.67-1.85,1.58l-4.02,25.36c-0.15,0.92,0.57,1.76,1.5,1.76l8.86,0c0.95,0,1.69-0.7,1.85-1.55l2.19-13.75
+          c0.13-0.84,0.85-1.45,1.7-1.45H59c8.34,0,15.51-6.08,16.8-14.32C76.72,48.09,73.77,42.77,68.74,40.13"></path>
+        <path class="st0" d="M41.87,35.35c0.13-0.84,0.85-1.45,1.7-1.45h14.98c2.72,0,5.32,0.19,7.34,1.23
+          c0.03-7.59-6.73-13.21-14.56-13.17H33.2c-0.84,0.04-1.61,0.66-1.75,1.58l-7.54,47.73c-0.19,0.98,0.56,1.8,1.47,1.8H35.9
+          L41.87,35.35z"></path>
+      </g>
+    </g>
+  </g>
+  </svg>
+  </a>
+      </div>
+      <div class="unified-panel-header__primary-content">
+        <div class="unified-panel-header__navigation">
+              <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('home')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/home" pa-marked="1">Home</a>
+      
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="active" onclick="primaryMainNavAnalytics.trackClick('transactions')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/transactions/advanced_search" pa-marked="1">Transactions</a>
+      
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('disputes')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/disputes" pa-marked="1">Disputes</a>
+      
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('vault')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/customers/advanced_search" pa-marked="1">Vault</a>
+      
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('reports')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/reports" pa-marked="1">Reports</a>
+      
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('performance')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/performance" pa-marked="1">Performance</a>
+      <div class="unified-panel-beta-badge">
+    BETA
+  </div>
+  
+    </div>
+    <div class="unified-panel-header__option">
+      <a class="" onclick="primaryMainNavAnalytics.trackClick('subscriptions')" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/subscriptions/advanced_search" pa-marked="1">Subscriptions</a>
+      
+    </div>
+  <script>
+  //<![CDATA[
+    var primaryMainNavAnalytics = new PaypalAnalytics(
+      'main:gateway:home',
+      'main:gateway:home',
+      '24z4n6rn88tvynbq',
+      'home_landing'
+    );
+  
+  //]]>
+  </script>
+  
+        </div>
+        <div class="unified-panel-header__meta">
+            <div class="unified-panel-header__search">
+      <div class="unified-panel-search-container">
+        <div class="unified-panel-search-bar">
+          <form action="/merchants/24z4n6rn88tvynbq/search" accept-charset="UTF-8" method="post"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" style="width: 16px; height: 16px;">
+    <path d="M6,11.3c1,0,2-0.3,2.9-0.8l4.9,4.9l1.6-1.6l-4.9-4.9c1.3-2.1,1.1-4.7-0.6-6.5s-4.3-2.2-6.5-1s-3.2,3.6-2.6,6S3.5,11.3,6,11.3L6,11.3z M6,2.1c2.1,0,3.8,1.7,3.8,3.8S8.1,9.8,6,9.8S2.1,8.1,2.1,6C2.1,3.8,3.9,2.1,6,2.1z" fill="#000000" fill-rule="nonzero"></path>
+  </svg>
+  
+            <input type="text" name="q" id="q" value="" placeholder="Search" class="unified-panel-search_input" autocomplete="off"></form>      </div>
+      </div>
+  </div>
+  
+  <script>
+    const containerSelector = ".unified-panel-search-container";
+    const focusClass = "unified-panel-search-container--focus";
+    const container = document.querySelector(containerSelector);
+  
+    function addFocusClass() { container.classList.add(focusClass) };
+    function removeFocusClass() { container.classList.remove(focusClass) };
+  
+    container.addEventListener("focus", addFocusClass, true);
+    container.addEventListener("blur", removeFocusClass, true);
+  </script>
+  
+  
+      <div class="unified-panel-header__toggle-menu" data-js="gear-container">
+        <div class="unified-panel-header__toggle-menu-icon">
+          <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Final" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <path d="M16.2,2l-2.7,1.3c-0.4-0.2-0.9-0.4-1.3-0.6L11.3,0L8.8,0L7.8,2.8C7.3,3,6.9,3.2,6.5,3.4L3.8,2L2,3.8l1.3,2.7C3.2,6.9,3,7.3,2.8,7.8L0,8.8l0,2.5l2.8,0.9c0.1,0.5,0.3,0.9,0.6,1.3L2,16.2L3.8,18l2.7-1.3c0.4,0.2,0.9,0.4,1.3,0.6L8.8,20l2.5,0l0.9-2.8c0.5-0.1,0.9-0.3,1.3-0.6l2.7,1.3l1.8-1.8l-1.3-2.7c0.2-0.4,0.4-0.9,0.6-1.3l2.8-0.9l0-2.5l-2.8-0.9c-0.1-0.5-0.3-0.9-0.6-1.3L18,3.8L16.2,2z M10,13c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3c0,0.8-0.3,1.6-0.9,2.1C11.6,12.7,10.8,13,10,13z" id="Settings-Icon" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+  </svg>
+  
+        </div>
+        <div class="unified-panel-header__toggle-menu-links" data-js="gear-content">
+            <li>
+      <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/users/g7mf3948rpxxsym4/api_keys" pa-marked="1">API</a>
+    </li>
+    <li>
+      <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/fraud" pa-marked="1">Fraud Management</a>
+    </li>
+    <li>
+      <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/processing" pa-marked="1">Account Settings</a>
+    </li>
+    <li>
+      <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/merchant_accounts/info" pa-marked="1">Business</a>
+    </li>
+    <li>
+      <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/connected_oauth_applications" pa-marked="1">OAuth</a>
+    </li>
+  
+        </div>
+      </div>
+  
+    <div class="unified-panel-header__toggle-menu" data-js="help-container">
+    <div class="unified-panel-header__toggle-menu-icon">
+      <!--?xml version="1.0" encoding="UTF-8"?-->
+  <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <path d="M10,20C4.5,20,0,15.5,0,10S4.5,0,10,0s10,4.5,10,10S15.5,20,10,20z M13.4,7.6c0-0.5-0.1-0.9-0.3-1.3s-0.4-0.6-0.7-0.9S11.7,5.1,11.3,5c-0.4-0.1-0.8-0.2-1.2-0.2C9.6,4.8,9.2,4.9,8.8,5C8.4,5.1,8,5.3,7.7,5.6c-0.3,0.3-0.6,0.6-0.8,1C6.7,6.9,6.6,7.4,6.6,7.9l2.2,0.2c0-0.3,0.1-0.6,0.3-0.9C9.3,6.9,9.6,6.8,10,6.8c0.3,0,0.6,0.1,0.7,0.3S11,7.5,11,7.8C11,8,11,8.2,10.8,8.3c-0.1,0.2-0.2,0.3-0.4,0.4L10,9.2C9.8,9.4,9.6,9.5,9.5,9.7C9.4,9.8,9.2,10,9.2,10.1c-0.1,0.2-0.2,0.3-0.2,0.5c0,0.2-0.1,0.4-0.1,0.7v0.5h2.2v-0.4c0-0.1,0-0.3,0-0.4c0-0.1,0.1-0.2,0.1-0.3s0.1-0.2,0.2-0.3s0.2-0.2,0.4-0.3c0.2-0.2,0.5-0.4,0.7-0.5c0.2-0.2,0.4-0.4,0.5-0.6c0.1-0.2,0.2-0.4,0.3-0.6C13.3,8.2,13.4,7.9,13.4,7.6z M11.3,13.8c0-0.2,0-0.3-0.1-0.5s-0.2-0.3-0.3-0.4c-0.1-0.1-0.3-0.2-0.4-0.3s-0.3-0.1-0.5-0.1c-0.2,0-0.4,0-0.5,0.1c-0.2,0.1-0.3,0.2-0.4,0.3c-0.1,0.1-0.2,0.3-0.3,0.4c-0.1,0.2-0.1,0.3-0.1,0.5c0,0.2,0,0.4,0.1,0.5c0.1,0.2,0.2,0.3,0.3,0.4S9.3,15,9.5,15s0.3,0.1,0.5,0.1c0.4,0,0.7-0.1,1-0.4S11.3,14.2,11.3,13.8z" fill="#FFFFFF"></path>
+  </svg>
+  
+    </div>
+    <div class="unified-panel-header__toggle-menu-links" data-js="help-content">
+        <li>
+      <a target="_blank" id="account_support_articles" href="https://articles.braintreepayments.com?refer=g7mf3948rpxxsym4" pa-marked="1">Support articles</a>
+    </li>
+    <li>
+      <a target="_blank" id="account_api_documentation" href="https://developers.braintreepayments.com?refer=g7mf3948rpxxsym4" pa-marked="1">Developer docs</a>
+    </li>
+    <li>
+      <a target="_blank" id="account_contact" href="https://help.braintreepayments.com?businessEmail=abrar%40rebelforce.tech&amp;businessName=VNPS+Holdings%2C+LLC&amp;merchant=24z4n6rn88tvynbq&amp;name=VNP+IT+NEW&amp;refer=g7mf3948rpxxsym4" pa-marked="1">Contact us</a>
+    </li>
+  
+    </div>
+  </div>
+  
+  <script>
+    new ToggleMenu({
+      containerNode: document.querySelector("[data-js='help-container']"),
+      contentNode: document.querySelector("[data-js='help-content']")
+    });
+  </script>
+  
+  
+  
+          <div class="unified-panel-header__settings" data-js="settings-container">
+            <div class="unified-panel-header__settings-avatar unified-panel-header__settings-avatar--V">
+              V
+            </div>
+            <div class="unified-panel-header__settings-menu" data-js="settings-content">
+              <div class="unified-panel-header__user">
+                <div class="unified-panel-header__user-avatar unified-panel-header__user-avatar--V">
+                  V              </div>
+                <div class="unified-panel-header__user-info">
+                  <div>VNP IT NEW</div>
+                  <div>abrar@rebelforce.tech</div>
+                </div>
+              </div>
+              <div class="unified-panel-header__settings-links">
+                  <a class="options action" id="account_my_user" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/users/g7mf3948rpxxsym4/edit_my_user" pa-marked="1">My User</a>
+                <a class="link-tooltip" href="https://my.surveypal.com/app/form/ext/save?_sid=1043650887&amp;_k=ThAwfvB0ziMZbXsF7vJoyPaoEB60dPgPkk-KVLRLjT8fcND_b-TiRJJIQYNH0jRs&amp;_d=0&amp;extid=abrar@rebelforce.tech&amp;unique=true&amp;data={}&amp;meta=[{'key':'dba_name','value':'VNPS Holdings, LLC'},{'key':'stage','value':'merchant'}]" target="_blank" rel="noopener" pa-marked="1">
+                  Give Feedback
+                  <span class="link-tooltip_text">
+                    By participating in this survey you will be sent to a SurveyPal website, and consent to PayPal sharing your email address and business name.
+                  </span>
+                </a>
+                <a id="account_logout" href="/logout" pa-marked="1">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="unified-panel-header__secondary" data-js="scrollable-fixed-nav">
+        <div class="unified-panel-header__secondary-content">
+          <div class="unified-panel-header__secondary-navigation unified-panel-header__secondary-navigation--main">
+                  <h2>
+        <a class="active" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/transactions/advanced_search" pa-marked="1">Transactions</a>
+      </h2>
+      <h2>
+        <a class="" href="https://www.braintreegateway.com/merchants/24z4n6rn88tvynbq/payment_contexts/advanced_search" pa-marked="1">Payment Contexts</a>
+      </h2>
+  
+  
+          </div>
+        </div>
+      </div>
+  </header>
+  
+  <script>
+    new ToggleMenu({
+      containerNode: document.querySelector("[data-js='settings-container']"),
+      contentNode: document.querySelector("[data-js='settings-content']")
+    });
+  </script>
+  
+  
+  <script>
+    new ToggleMenu({
+      containerNode: document.querySelector("[data-js='gear-container']"),
+      contentNode: document.querySelector("[data-js='gear-content']")
+    });
+  </script>
+  
+  
+    <div class="content">
+      <div id="flash-banner">
+        
+  <script src="https://gstatic.braintreegateway.com/assets/make_alert_closeable-fca879a01a30d19db7b98828cb87fb43c99fb63dacc5a50cb32c3bc38a93545b.js"></script>
+  
+  <script type="text/javascript">
+    $(document).on(".unified-panel [data-js=closable-alert-button]", function(el){
+      var $alert = $(el).closest(".alert");
+  
+      $(el).click(function() {
+        $alert.remove();
+      });
+  
+      setTimeout(function() {
+        $alert.remove();
+      }, 10000);
+    });
+  
+    var alertsContainer = $("#flash-banner");
+  
+    var showAlert = function(alertHtml){
+      var $alert = $(alertHtml);
+  
+      alertsContainer.prepend($alert);
+  
+      return $alert;
+    };
+  
+    window.AlertNotification = {
+      removeAll: function(){
+        return alertsContainer.find(".alert").remove();
+      },
+  
+      showSuccess: function(message){
+        var alertHtml = "\n<div class=\"alert success\">\n  <div class=\"detail\">\n    <h6>Success<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showErrorToast: function(message){
+        var alertHtml = "\n<div class=\"alert error_toast\">\n  <div class=\"detail\">\n    <h6>Error_toast<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showNotice: function(message){
+        var alertHtml = "\n<div class=\"alert notice\">\n  <div class=\"detail\">\n    <h6>Notice<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showError: function(message){
+        var alertHtml = "\n<div class=\"alert error\">\n  <div class=\"detail\">\n    <h6>Error<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+    };
+  </script>
+  
+      </div>
+  
+      <div class="content_wrap">
+        <div class="content_wrap-inner">
+          
+  <script>
+  //<![CDATA[
+    let transactionSearchAnalytics = new PaypalAnalytics(
+      'main:gateway:transactions',
+      'main:gateway:transactions_search_result',
+      '24z4n6rn88tvynbq',
+      'transactions_search_result',
+      ''
+    );
+    $(document).ready(function() {
+      transactionSearchAnalytics.setupPaypalAnalytics();
+      new TransactionSearchForm().setup();
+    });
+  
+  //]]>
+  </script>
+  
+  <form id="advanced_search_form" action="/merchants/24z4n6rn88tvynbq/transactions/advanced_search" accept-charset="UTF-8" method="post"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>
+      <header class="header_group">
+        <h2>Transaction Create</h2>
+        <div class="btn_group">
+          <a class="btn btn_secondary" onclick="transactionSearchAnalytics.trackClick('new_transaction')" href="/merchants/24z4n6rn88tvynbq/transactions/new" pa-marked="1">
+            <svg class="plus-icon unified-panel-button-icon" width="10px" height="10px" viewBox="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g>
+        <rect x="4" y="0" width="2" height="10"></rect>
+        <rect transform="translate(5.000000, 5.000000) rotate(-270.000000) translate(-5.000000, -5.000000) " x="4" y="0" width="2" height="10"></rect>
+      </g>
+    </g>
+  </svg>
+   New Transaction
+  </a>      </div>
+        <hr>
+      </header>
+  
+    <header class="header_group">
+      <h2>Transaction Search</h2>
+    </header>
+  
+          <div class="block">
+            <div class="search_criteria_heading">
+              <h3>Merchant Account</h3>
+            </div>
+            <div id="merchant_account_tokens" class="multiplete" style=""><ul class="multiplete-list"><li class="multiplete-choice">ALL<input type="hidden" value="ALL" name="search[merchant_account_id][]"><a href="javascript:void(0)" class="multiplete-remove" pa-marked="1">×</a></li><li class="multiplete-input"><input type="text" class="ui-autocomplete-input" autocomplete="off" style="width: 34px;"></li></ul>
+    <script>
+  //<![CDATA[
+      (function () {
+        var autocomplete = new MerchantAutoComplete("#merchant_account_tokens");
+  
+        $(function () {
+          autocomplete.init({
+            remote_url: "/merchants/24z4n6rn88tvynbq/merchant_accounts/search",
+            delay: 500,
+            marketplace: false,
+            param_name: "search[merchant_account_id]",
+          });
+        });
+      }());
+  
+  //]]>
+  </script></div>
+  
+          </div>
+  
+          <div class="block">
+            <table style="border: none; width: 100%;" class="advanced-search-table">
+          <tbody><tr>
+            <td>
+              <div class="search_criteria_heading"><h3>Transaction Type</h3></div>
+              <div>
+                <input type="checkbox" name="all_types" id="all_types" value="1" class="search_category_all_checkbox">              <label for="all_types" class="search_criteria">All</label>
+              </div>
+              <div>
+                <input type="checkbox" name="search[type][]" id="search_type_sale" value="sale" class="search_criteria_value" checked="checked">            <label for="search_type_sale" class="search_criteria">Sale</label>
+              </div>
+              <div>
+                <input type="checkbox" name="search[refund][]" id="search_type_credit_with_refunds" value="true" class="search_criteria_value" checked="checked">            <label for="search_type_credit_with_refunds" class="search_criteria">Credit with a Previous Transaction (Refund)</label>
+              </div>
+              <div>
+                <input type="checkbox" name="search[refund][]" id="search_type_credit_without_refunds" value="false" class="search_criteria_value" checked="checked">            <label for="search_type_credit_without_refunds" class="search_criteria">Credit without a Previous Transaction</label>
+              </div>
+              <div>
+                <input id="credit" name="search[type][]" type="hidden" value="credit">
+              </div>
+  
+              <div>
+                <div class="search_criteria_heading" style="margin-top: 20px;"><h3>Transaction Options</h3></div>
+  
+                <div>
+                  <div>
+                    <input type="checkbox" name="all_processing_modes" id="all_processing_modes" value="1" class="search_category_all_checkbox">                  <label for="all_processing_modes" class="search_criteria" style="display: inline-block;">All Processing Modes</label>
+                  </div>
+                  <div class="indent">
+                    <div>
+                      <input type="checkbox" name="search[processing_mode][]" id="search_processing_mode_online" value="online" class="search_criteria_value" checked="checked">                  <label for="search_processing_mode_online" class="search_criteria">Online Transactions</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" name="search[processing_mode][]" id="search_processing_mode_deferred" value="deferred" class="search_criteria_value" checked="checked">                  <label for="search_processing_mode_deferred" class="search_criteria">Offline / Deferred Transactions</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+  
+              <div>
+                <div class="search_criteria_heading" style="margin-top: 20px;"><h3>Transaction Source</h3></div>
+                <div>
+                  <input type="checkbox" name="all_sources" id="all_sources" value="1" class="search_category_all_checkbox">                <label for="all_sources" class="search_criteria">All</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[source][]" id="search_source_api" value="api" class="search_criteria_value" checked="checked">                <label for="search_source_api" class="search_criteria">API</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[source][]" id="search_source_control_panel" value="control_panel" class="search_criteria_value" checked="checked">                <label for="search_source_control_panel" class="search_criteria">Control Panel</label>
+                </div>
+  
+                <div>
+                  <input type="checkbox" name="search[source][]" id="search_source_payment_reader" value="payment_reader" class="search_criteria_value" checked="checked">            <label for="search_source_payment_reader" class="search_criteria">Payment Reader</label>
+                </div>
+  
+                  <div>
+                    <input type="checkbox" name="search[source][]" id="search_source_recurring" value="recurring" class="search_criteria_value" checked="checked">                  <label for="search_source_recurring" class="search_criteria">Recurring</label>
+                  </div>
+  
+  
+                  <div>
+    <h4>OAuth</h4>
+    <div>
+      <input type="checkbox" name="all_oauth_applications" id="all_oauth_applications" value="1" class="search_category_all_checkbox">    <label for="all_oauth_applications" class="search_criteria">All</label>
+    </div>
+      <div>
+        <input type="checkbox" name="search[source][]" id="search_source_oauth_application_client_id$production$bgr43xhrvnmgcy9d" value="client_id$production$bgr43xhrvnmgcy9d" class="search_criteria_value" checked="checked">    <label for="search_source_oauth_application_client_id$production$bgr43xhrvnmgcy9d" class="search_criteria">PayPal Here SDK</label>
+      </div>
+  </div>
+  
+              </div>
+  
+                <div style="margin-top: 20px">
+                  <div id="user_multi_select">
+    <h3 class="search_criteria_heading">Users</h3>
+    <div>
+      <input type="checkbox" name="all_checkbox" id="all_checkbox" value="1" class="multi_select_all_checkbox" disabled="">    <label for="all_checkbox" class="search_criteria">All</label>
+    </div>
+    <div class="multi_select_selected_values"></div>
+    
+    <div><a class="multi_select_dialog_link" href="#" pa-marked="1">Select Users</a></div>
+  </div>
+  
+                </div>
+            </td>
+            <td>
+              <div>
+                <div class="search_criteria_heading">
+                  <h3>
+                    Authorization Status
+                  </h3>
+                </div>
+                <div>
+                  <input type="checkbox" name="all_authorization_types" id="all_authorization_types" value="1" class="search_category_all_checkbox">                <label for="all_authorization_types" class="search_criteria">All</label>
+                </div>
+                <div class="indent">
+                  <div>
+                    <input type="checkbox" name="search[authorization_type][]" id="search_authorization_type_fully_authorized" value="fully_authorized" class="search_criteria_value" checked="checked">                <label for="search_authorization_type_fully_authorized" class="search_criteria">Fully Authorized</label>
+                  </div>
+                  <div>
+                    <input type="checkbox" name="search[authorization_type][]" id="search_authorization_type_partially_authorized" value="partially_authorized" class="search_criteria_value" checked="checked">                <label for="search_authorization_type_partially_authorized" class="search_criteria">Partially Authorized</label>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="search_criteria_heading"><h3>Status</h3></div>
+              <div>
+                <input type="checkbox" name="all_statuses" id="all_statuses" value="1" class="search_category_all_checkbox">              <label for="all_statuses" class="search_criteria">All</label>
+              </div>
+              <div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_authorized" value="authorized" class="search_criteria_value" checked="checked">                <label for="search_status_authorized" class="search_criteria">Authorized</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_submitted_for_settlement" value="submitted_for_settlement" class="search_criteria_value" checked="checked">                <label for="search_status_submitted_for_settlement" class="search_criteria">Submitted For Settlement</label>
+                </div>
+                  <div>
+                    <input type="checkbox" name="search[status][]" id="search_status_settlement_pending" value="settlement_pending" class="search_criteria_value" checked="checked">                  <label for="search_status_settlement_pending" class="search_criteria">Settlement Pending</label>
+                  </div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_settlement_confirmed" value="settlement_confirmed" class="search_criteria_value" checked="checked">                <label for="search_status_settlement_confirmed" class="search_criteria">Settlement Confirmed</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_settling" value="settling" class="search_criteria_value" checked="checked">                <label for="search_status_settling" class="search_criteria">Settling</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_settled" value="settled" class="search_criteria_value" checked="checked">                <label for="search_status_settled" class="search_criteria">Settled</label>
+                </div>
+                <div>
+                  <input type="checkbox" name="search[status][]" id="search_status_voided" value="voided" class="search_criteria_value" checked="checked">                <label for="search_status_voided" class="search_criteria">Voided</label>
+                </div>
+                <div>
+                  <div>
+                    <input type="checkbox" name="all_unsuccessful_statuses" id="all_unsuccessful_statuses" value="1" class="search_category_all_checkbox">                  <label for="all_unsuccessful_statuses" class="search_criteria">All Unsuccessful</label>
+                  </div>
+                  <div class="indent">
+                    <div>
+                      <input type="checkbox" name="search[status][]" id="search_status_processor_declined" value="processor_declined" class="search_criteria_value" checked="checked">                    <label for="search_status_processor_declined" class="search_criteria">Processor Declined</label>
+                    </div>
+                      <div>
+      <div>
+        <input type="checkbox" name="any_gateway_rejection_reasons" id="any_gateway_rejection_reasons" value="1" class="search_category_any_checkbox" checked="checked">      <label for="any_gateway_rejection_reasons" class="search_criteria">Gateway Rejected</label>
+      </div>
+      <div class="indent">
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_three_d_secure" value="three_d_secure" class="search_criteria_value" checked="checked">        <label for="search_status_three_d_secure" class="search_criteria">3D Secure</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_avs" value="avs" class="search_criteria_value" checked="checked">        <label for="search_status_avs" class="search_criteria">AVS</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_cvv" value="cvv" class="search_criteria_value" checked="checked">        <label for="search_status_cvv" class="search_criteria">CVV</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_avs_and_cvv" value="avs_and_cvv" class="search_criteria_value" checked="checked">        <label for="search_status_avs_and_cvv" class="search_criteria">AVS and CVV</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_risk_threshold" value="risk_threshold" class="search_criteria_value" checked="checked">        <label for="search_status_risk_threshold" class="search_criteria">Risk Threshold Exceeded</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_fraud" value="fraud" class="search_criteria_value" checked="checked">        <label for="search_status_fraud" class="search_criteria">Fraud</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_application_incomplete" value="application_incomplete" class="search_criteria_value" checked="checked">        <label for="search_status_application_incomplete" class="search_criteria">Application Incomplete</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_duplicate" value="duplicate" class="search_criteria_value" checked="checked">        <label for="search_status_duplicate" class="search_criteria">Duplicate</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_excessive_retry" value="excessive_retry" class="search_criteria_value" checked="checked">        <label for="search_status_excessive_retry" class="search_criteria">Retry Threshold Exceeded</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_manual_transactions_disabled" value="manual_transactions_disabled" class="search_criteria_value" checked="checked">        <label for="search_status_manual_transactions_disabled" class="search_criteria">Manual Transactions Disabled</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_payment_method_blocked" value="payment_method_blocked" class="search_criteria_value" checked="checked">        <label for="search_status_payment_method_blocked" class="search_criteria">Payment Method Blocked</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_token_issuance" value="token_issuance" class="search_criteria_value" checked="checked">        <label for="search_status_token_issuance" class="search_criteria">Token Issuance</label>
+          </div>
+          <div>
+            <input type="checkbox" name="search[status][]" id="search_status_union_pay_enrollment_required" value="union_pay_enrollment_required" class="search_criteria_value" checked="checked">        <label for="search_status_union_pay_enrollment_required" class="search_criteria">Union Pay Enrollment Required</label>
+          </div>
+      </div>
+    </div>
+  
+                    <div>
+                      <input type="checkbox" name="search[status][]" id="search_status_failed" value="failed" class="search_criteria_value" checked="checked">                    <label for="search_status_failed" class="search_criteria">Failed</label>
+                    </div>
+                      <div>
+                        <input type="checkbox" name="search[status][]" id="search_status_settlement_declined" value="settlement_declined" class="search_criteria_value">                    <label for="search_status_settlement_declined" class="search_criteria">Settlement Declined</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" name="search[status][]" id="search_status_authorization_expired" value="authorization_expired" class="search_criteria_value" checked="checked">                    <label for="search_status_authorization_expired" class="search_criteria">Authorization Expired</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+  
+            <td>
+    <div class="search_criteria_heading"><h3>Card Type</h3></div>
+    <div>
+      <input type="checkbox" name="all_credit_card_card_types" id="all_credit_card_card_types" value="1" class="search_category_all_checkbox">    <label for="all_credit_card_card_types" class="search_criteria">All</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_visa" value="Visa" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_visa" class="search_criteria">Visa</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_mastercard" value="MasterCard" class="search_criteria_value" checked="checked">  <label for="search_credit_card_card_type_mastercard" class="search_criteria">Mastercard</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_amex" value="American Express" class="search_criteria_value" checked="checked">  <label for="search_credit_card_card_type_amex" class="search_criteria">Amex</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_discover" value="Discover" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_discover" class="search_criteria">Discover</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_jcb" value="JCB" class="search_criteria_value" checked="checked">  <label for="search_credit_card_card_type_jcb" class="search_criteria">JCB</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_maestro" value="Maestro" class="search_criteria_value" checked="checked">  <label for="search_credit_card_card_type_maestro" class="search_criteria">Maestro</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_union_pay" value="UnionPay" class="search_criteria_value" checked="checked">  <label for="search_credit_card_card_type_union_pay" class="search_criteria">UnionPay</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_elo" value="Elo" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_elo" class="search_criteria">Elo</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_hiper" value="Hiper" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_hiper" class="search_criteria">Hiper</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_hipercard" value="Hipercard" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_hipercard" class="search_criteria">Hipercard</label>
+    </div>
+    <div>
+      <input type="checkbox" name="search[credit_card_card_type][]" id="search_credit_card_card_type_verve" value="Verve" class="search_criteria_value" checked="checked">    <label for="search_credit_card_card_type_verve" class="search_criteria">Verve</label>
+    </div>
+  </td>
+  
+  
+  
+              <td>
+      <div class="search_criteria_heading"><h3>Payment Instrument Type</h3></div>
+      <div>
+        <input type="checkbox" name="all_payment_instrument_types" id="all_payment_instrument_types" value="1" class="search_category_all_checkbox">      <label for="all_payment_instrument_types" class="search_criteria">All</label>
+      </div>
+      <div>
+        <input type="checkbox" name="search[payment_instrument_type][]" id="search_payment_instrument_type_credit_card" value="CreditCardDetail" class="search_criteria_value" checked="checked">      <label for="search_payment_instrument_type_credit_card" class="search_criteria">Credit Card</label>
+      </div>
+      <div>
+        <input type="checkbox" name="search[payment_instrument_type][]" id="search_payment_instrument_type_paypal" value="PayPalDetail" class="search_criteria_value" checked="checked">      <label for="search_payment_instrument_type_paypal" class="search_criteria">PayPal</label>
+      </div>
+      <div>
+        <input type="checkbox" name="search[payment_instrument_type][]" id="search_payment_instrument_type_local_payment" value="LocalPaymentDetail" class="search_criteria_value" checked="checked">      <label for="search_payment_instrument_type_local_payment" class="search_criteria">Local Payment</label>
+      </div>
+      <div>
+        <input type="checkbox" name="search[payment_instrument_type][]" id="search_payment_instrument_type_network_token" value="NetworkTokenAttributesSnapshot" class="search_criteria_value" checked="checked">      <label for="search_payment_instrument_type_network_token" class="search_criteria">External Network Token</label>
+      </div>
+    </td>
+  
+          </tr>
+            </tbody></table>
+          </div>
+  
+  
+        <div class="block">
+          <div id="search_text_fields">
+          <div id="text_field_018413994576196802">
+            <div class="text_field_inputs" style="">
+    <div class="selector" style="width: 270px;"><span style="width: 308px; user-select: none;">Select Field</span><select class="text_field_field uniform advanced-search-field-select" style="">
+      <option value="select_field">Select Field</option>
+      <optgroup label="Transaction Information">        <option value="id">
+            Transaction ID
+          </option>
+          <option value="currency">
+            Currency
+          </option>
+          <option value="order_id">
+            Order ID
+          </option>
+          <option value="processor_authorization_code">
+            Processor Authorization Code
+          </option>
+          <option value="store_id">
+            Store ID
+          </option>
+          <option value="merchant_account_id_fragment">
+            Merchant Account
+          </option>
+  </optgroup>
+      <optgroup label="Settlement Information">        <option value="settlement_batch_id">
+            Settlement Batch ID
+          </option>
+  </optgroup>
+      <optgroup label="Payment Information">        <option value="payment_method_token">
+            Payment Method Token
+          </option>
+          <option value="credit_card_cardholder_name">
+            Cardholder Name
+          </option>
+          <option value="credit_card_number">
+            Credit Card Number
+          </option>
+          <option value="credit_card_unique_identifier">
+            Credit Card Unique Identifier
+          </option>
+          <option value="credit_card_expiration_date">
+            Expiration Date
+          </option>
+          <option value="device_primary_account_number">
+            Device Primary Account Number
+          </option>
+          <option value="paypal_payer_email">
+            PayPal Account Payer Email
+          </option>
+          <option value="paypal_payment_id">
+            PayPal Account Payment ID
+          </option>
+          <option value="paypal_authorization_id">
+            PayPal Account Authorization Unique Transaction ID
+          </option>
+          <option value="local_payment_payment_id">
+            Local Payment Unique Payment ID
+          </option>
+          <option value="local_payment_funding_source">
+            Local Payment Type
+          </option>
+  </optgroup>
+      <optgroup label="Customer Information">        <option value="customer_id">
+            Customer ID
+          </option>
+          <option value="customer_first_name">
+            Customer First Name
+          </option>
+          <option value="customer_last_name">
+            Customer Last Name
+          </option>
+          <option value="customer_company">
+            Customer Company
+          </option>
+          <option value="customer_email">
+            Customer Email
+          </option>
+  </optgroup>
+      <optgroup label="Billing Address">        <option value="billing_first_name">
+            Billing First Name
+          </option>
+          <option value="billing_last_name">
+            Billing Last Name
+          </option>
+          <option value="billing_company">
+            Billing Company
+          </option>
+          <option value="billing_street_address">
+            Billing Street Address
+          </option>
+          <option value="billing_extended_address">
+            Billing Extended Address
+          </option>
+          <option value="billing_locality">
+            Billing City (Locality)
+          </option>
+          <option value="billing_region">
+            Billing State/Province (Region)
+          </option>
+          <option value="billing_postal_code">
+            Billing Postal Code
+          </option>
+          <option value="billing_country_name">
+            Billing Country Name
+          </option>
+  </optgroup>
+      <optgroup label="Shipping Address">        <option value="shipping_first_name">
+            Shipping First Name
+          </option>
+          <option value="shipping_last_name">
+            Shipping Last Name
+          </option>
+          <option value="shipping_company">
+            Shipping Company
+          </option>
+          <option value="shipping_street_address">
+            Shipping Street Address
+          </option>
+          <option value="shipping_extended_address">
+            Shipping Extended Address
+          </option>
+          <option value="shipping_locality">
+            Shipping City (Locality)
+          </option>
+          <option value="shipping_region">
+            Shipping State/Province (Region)
+          </option>
+          <option value="shipping_postal_code">
+            Shipping Postal Code
+          </option>
+          <option value="shipping_country_name">
+            Shipping Country Name
+          </option>
+  </optgroup>
+    </select></div>
+  
+    <div class="selector" style="width: 142px;"><span style="width: 180px; user-select: none;">
+          is
+        </span><select class="text_field_operator uniform advanced-search-operator-select" style="">
+        <option value="is">
+          is
+        </option>
+        <option value="is_not">
+          is not
+        </option>
+        <option value="starts_with">
+          starts with
+        </option>
+        <option value="ends_with">
+          ends with
+        </option>
+        <option value="contains">
+          contains
+        </option>
+    </select></div>
+  
+    <input class="text_field_value advanced-search-input" type="text" value="">
+  
+    <a class="remove_criteria_link" style="display: none" href="#" pa-marked="1">Remove</a>
+  </div>
+  
+          </div></div>
+          <div id="text_field_template" style="display: none;">
+            <div class="text_field_inputs" style="">
+    <div class="selector" style="width: 270px;"><span style="width: 308px; user-select: none;">Select Field</span><select class="text_field_field uniform advanced-search-field-select" style="">
+      <option value="select_field">Select Field</option>
+      <optgroup label="Transaction Information">        <option value="id">
+            Transaction ID
+          </option>
+          <option value="currency">
+            Currency
+          </option>
+          <option value="order_id">
+            Order ID
+          </option>
+          <option value="processor_authorization_code">
+            Processor Authorization Code
+          </option>
+          <option value="store_id">
+            Store ID
+          </option>
+          <option value="merchant_account_id_fragment">
+            Merchant Account
+          </option>
+  </optgroup>
+      <optgroup label="Settlement Information">        <option value="settlement_batch_id">
+            Settlement Batch ID
+          </option>
+  </optgroup>
+      <optgroup label="Payment Information">        <option value="payment_method_token">
+            Payment Method Token
+          </option>
+          <option value="credit_card_cardholder_name">
+            Cardholder Name
+          </option>
+          <option value="credit_card_number">
+            Credit Card Number
+          </option>
+          <option value="credit_card_unique_identifier">
+            Credit Card Unique Identifier
+          </option>
+          <option value="credit_card_expiration_date">
+            Expiration Date
+          </option>
+          <option value="device_primary_account_number">
+            Device Primary Account Number
+          </option>
+          <option value="paypal_payer_email">
+            PayPal Account Payer Email
+          </option>
+          <option value="paypal_payment_id">
+            PayPal Account Payment ID
+          </option>
+          <option value="paypal_authorization_id">
+            PayPal Account Authorization Unique Transaction ID
+          </option>
+          <option value="local_payment_payment_id">
+            Local Payment Unique Payment ID
+          </option>
+          <option value="local_payment_funding_source">
+            Local Payment Type
+          </option>
+  </optgroup>
+      <optgroup label="Customer Information">        <option value="customer_id">
+            Customer ID
+          </option>
+          <option value="customer_first_name">
+            Customer First Name
+          </option>
+          <option value="customer_last_name">
+            Customer Last Name
+          </option>
+          <option value="customer_company">
+            Customer Company
+          </option>
+          <option value="customer_email">
+            Customer Email
+          </option>
+  </optgroup>
+      <optgroup label="Billing Address">        <option value="billing_first_name">
+            Billing First Name
+          </option>
+          <option value="billing_last_name">
+            Billing Last Name
+          </option>
+          <option value="billing_company">
+            Billing Company
+          </option>
+          <option value="billing_street_address">
+            Billing Street Address
+          </option>
+          <option value="billing_extended_address">
+            Billing Extended Address
+          </option>
+          <option value="billing_locality">
+            Billing City (Locality)
+          </option>
+          <option value="billing_region">
+            Billing State/Province (Region)
+          </option>
+          <option value="billing_postal_code">
+            Billing Postal Code
+          </option>
+          <option value="billing_country_name">
+            Billing Country Name
+          </option>
+  </optgroup>
+      <optgroup label="Shipping Address">        <option value="shipping_first_name">
+            Shipping First Name
+          </option>
+          <option value="shipping_last_name">
+            Shipping Last Name
+          </option>
+          <option value="shipping_company">
+            Shipping Company
+          </option>
+          <option value="shipping_street_address">
+            Shipping Street Address
+          </option>
+          <option value="shipping_extended_address">
+            Shipping Extended Address
+          </option>
+          <option value="shipping_locality">
+            Shipping City (Locality)
+          </option>
+          <option value="shipping_region">
+            Shipping State/Province (Region)
+          </option>
+          <option value="shipping_postal_code">
+            Shipping Postal Code
+          </option>
+          <option value="shipping_country_name">
+            Shipping Country Name
+          </option>
+  </optgroup>
+    </select></div>
+  
+    <div class="selector" style="width: 142px;"><span style="width: 180px; user-select: none;">
+          is
+        </span><select class="text_field_operator uniform advanced-search-operator-select" style="">
+        <option value="is">
+          is
+        </option>
+        <option value="is_not">
+          is not
+        </option>
+        <option value="starts_with">
+          starts with
+        </option>
+        <option value="ends_with">
+          ends with
+        </option>
+        <option value="contains">
+          contains
+        </option>
+    </select></div>
+  
+    <input class="text_field_value advanced-search-input" type="text" value="">
+  
+    <a class="remove_criteria_link" style="display: none" href="#" pa-marked="1">Remove</a>
+  </div>
+  
+          </div>
+          <div style="margin-bottom: 10px;"><a id="add_text_field" class="" href="#" pa-marked="1">+ Add</a></div>
+        </div>
+  
+        <div class="block search_criteria_range_field">
+          <div>
+            <div class="search_criteria_heading"><h3>Amount <small>(x.xx)</small></h3></div>
+          </div>
+          <div>
+            <input type="text" name="search[amount][min]" id="search_amount_min" class="short_text_field">          <span>to</span>
+            <input type="text" name="search[amount][max]" id="search_amount_max" class="short_text_field">        </div>
+        </div>
+  
+          
+  <div class="block">
+    <div class="date_range">
+  
+      <div>
+  
+          <input type="checkbox" name="search[created_at][checked]" id="Created" value="created" class="status_at" checked="checked">
+  
+          <label for="Created" class="status_at">Creation date range</label>
+  
+          <div class="bt-tooltip-container vertical-align-middle">
+    <img alt="tooltip icon" data-fallback="https://gstatic.braintreegateway.com/assets/question-1f7063f7fc24c40b3a3cf73558f1e87b6c5b40afe9c6d9766c7b6172c996d27c.png" class="bt-tooltip-trigger noblock " src="https://gstatic.braintreegateway.com/assets/question-6bf6ac67e9293006bf2d297d1bd899fa91f2599935ae53dfafd559d7c2ed7a4f.svg">
+    <div class="bt-tooltip right zero" style="min-width: 300px;">For Store And Forward (SAF) transactions, search is based on the time that the transaction was initiated from the reader</div>
+  </div>
+  
+  
+      </div>
+  
+      <div class="date_fields">
+  
+        <ul id="date-shortcuts">
+          <li><a class="this_year_link js-created_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Year</a></li>
+          <li><a class="this_month_link js-created_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Month</a></li>
+          <li><a class="last_month_link js-created_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Last Month</a></li>
+          <li><a class="past_thirty_days js-created_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Past 30 Days</a></li>
+          <li><a class="today_link js-created_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Today</a></li>
+          <li><a class="custom js-created_at-date-shortcut" href="#" pa-marked="1">Custom</a></li>
+        </ul>
+  
+        <div class="date-pickers">
+          <label for="search[created_at][min]">Start</label>
+          <div class="date-picker-start">
+            <input type="text" name="search[created_at][min]" id="search_created_at_min" value="09/01/2025" class="datepicker short_text_field search_min hasDatepicker"><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_created_at_min_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[created_at][min_hour]" id="search_created_at_min_hour" class="uniform"><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_created_at_min_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[created_at][min_minute]" id="search_created_at_min_minute" class="uniform"><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option value="59">59</option></select></div>        </div>
+          <label>End</label>
+          <div class="date-picker-end">
+            <input type="text" name="search[created_at][max]" id="search_created_at_max" value="09/30/2025" class="datepicker short_text_field search_max hasDatepicker"><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_created_at_max_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">23</span><select name="search[created_at][max_hour]" id="search_created_at_max_hour" class="uniform"><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option selected="selected" value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_created_at_max_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">59</span><select name="search[created_at][max_minute]" id="search_created_at_max_minute" class="uniform"><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option selected="selected" value="59">59</option></select></div>        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+          
+  <div class="block">
+    <div class="date_range">
+  
+      <div>
+  
+          <input type="checkbox" name="search[settled_at][checked]" id="Settled" value="settled" class="status_at">
+  
+          <label for="Settled" class="status_at">Settled date range</label>
+  
+  
+      </div>
+  
+      <div class="date_fields" style="display: none;">
+  
+        <ul id="date-shortcuts">
+          <li><a class="this_year_link js-settled_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Year</a></li>
+          <li><a class="this_month_link js-settled_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Month</a></li>
+          <li><a class="last_month_link js-settled_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Last Month</a></li>
+          <li><a class="past_thirty_days js-settled_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Past 30 Days</a></li>
+          <li><a class="today_link js-settled_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Today</a></li>
+          <li><a class="custom js-settled_at-date-shortcut" href="#" pa-marked="1">Custom</a></li>
+        </ul>
+  
+        <div class="date-pickers">
+          <label for="search[settled_at][min]">Start</label>
+          <div class="date-picker-start">
+            <input type="text" name="search[settled_at][min]" id="search_settled_at_min" value="09/01/2025" class="datepicker short_text_field search_min hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_settled_at_min_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[settled_at][min_hour]" id="search_settled_at_min_hour" class="uniform" disabled=""><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_settled_at_min_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[settled_at][min_minute]" id="search_settled_at_min_minute" class="uniform" disabled=""><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option value="59">59</option></select></div>        </div>
+          <label>End</label>
+          <div class="date-picker-end">
+            <input type="text" name="search[settled_at][max]" id="search_settled_at_max" value="09/30/2025" class="datepicker short_text_field search_max hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_settled_at_max_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">23</span><select name="search[settled_at][max_hour]" id="search_settled_at_max_hour" class="uniform" disabled=""><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option selected="selected" value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_settled_at_max_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">59</span><select name="search[settled_at][max_minute]" id="search_settled_at_max_minute" class="uniform" disabled=""><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option selected="selected" value="59">59</option></select></div>        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="block">
+    <div class="date_range">
+  
+      <div>
+  
+          <input type="checkbox" name="search[submitted_for_settlement_at][checked]" id="Submitted For Settlement" value="submitted_for_settlement" class="status_at">
+  
+          <label for="Submitted For Settlement" class="status_at">Submitted For Settlement date range</label>
+  
+  
+      </div>
+  
+      <div class="date_fields" style="display: none;">
+  
+        <ul id="date-shortcuts">
+          <li><a class="this_year_link js-submitted_for_settlement_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Year</a></li>
+          <li><a class="this_month_link js-submitted_for_settlement_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Month</a></li>
+          <li><a class="last_month_link js-submitted_for_settlement_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Last Month</a></li>
+          <li><a class="past_thirty_days js-submitted_for_settlement_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Past 30 Days</a></li>
+          <li><a class="today_link js-submitted_for_settlement_at-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Today</a></li>
+          <li><a class="custom js-submitted_for_settlement_at-date-shortcut" href="#" pa-marked="1">Custom</a></li>
+        </ul>
+  
+        <div class="date-pickers">
+          <label for="search[submitted_for_settlement_at][min]">Start</label>
+          <div class="date-picker-start">
+            <input type="text" name="search[submitted_for_settlement_at][min]" id="search_submitted_for_settlement_at_min" value="09/01/2025" class="datepicker short_text_field search_min hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_submitted_for_settlement_at_min_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[submitted_for_settlement_at][min_hour]" id="search_submitted_for_settlement_at_min_hour" class="uniform" disabled=""><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_submitted_for_settlement_at_min_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">00</span><select name="search[submitted_for_settlement_at][min_minute]" id="search_submitted_for_settlement_at_min_minute" class="uniform" disabled=""><option selected="selected" value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option value="59">59</option></select></div>        </div>
+          <label>End</label>
+          <div class="date-picker-end">
+            <input type="text" name="search[submitted_for_settlement_at][max]" id="search_submitted_for_settlement_at_max" value="09/30/2025" class="datepicker short_text_field search_max hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">            <div class="selector" id="uniform-search_submitted_for_settlement_at_max_hour" style="width: 102px;"><span style="width: 140px; user-select: none;">23</span><select name="search[submitted_for_settlement_at][max_hour]" id="search_submitted_for_settlement_at_max_hour" class="uniform" disabled=""><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option selected="selected" value="23">23</option></select></div>            :
+              <div class="selector" id="uniform-search_submitted_for_settlement_at_max_minute" style="width: 102px;"><span style="width: 140px; user-select: none;">59</span><select name="search[submitted_for_settlement_at][max_minute]" id="search_submitted_for_settlement_at_max_minute" class="uniform" disabled=""><option value="0">00</option>
+  <option value="1">01</option>
+  <option value="2">02</option>
+  <option value="3">03</option>
+  <option value="4">04</option>
+  <option value="5">05</option>
+  <option value="6">06</option>
+  <option value="7">07</option>
+  <option value="8">08</option>
+  <option value="9">09</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+  <option value="12">12</option>
+  <option value="13">13</option>
+  <option value="14">14</option>
+  <option value="15">15</option>
+  <option value="16">16</option>
+  <option value="17">17</option>
+  <option value="18">18</option>
+  <option value="19">19</option>
+  <option value="20">20</option>
+  <option value="21">21</option>
+  <option value="22">22</option>
+  <option value="23">23</option>
+  <option value="24">24</option>
+  <option value="25">25</option>
+  <option value="26">26</option>
+  <option value="27">27</option>
+  <option value="28">28</option>
+  <option value="29">29</option>
+  <option value="30">30</option>
+  <option value="31">31</option>
+  <option value="32">32</option>
+  <option value="33">33</option>
+  <option value="34">34</option>
+  <option value="35">35</option>
+  <option value="36">36</option>
+  <option value="37">37</option>
+  <option value="38">38</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+  <option value="46">46</option>
+  <option value="47">47</option>
+  <option value="48">48</option>
+  <option value="49">49</option>
+  <option value="50">50</option>
+  <option value="51">51</option>
+  <option value="52">52</option>
+  <option value="53">53</option>
+  <option value="54">54</option>
+  <option value="55">55</option>
+  <option value="56">56</option>
+  <option value="57">57</option>
+  <option value="58">58</option>
+  <option selected="selected" value="59">59</option></select></div>        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+            
+  <div class="block">
+    <div class="date_range">
+  
+      <div>
+  
+          <input type="checkbox" name="search[disbursement_date][checked]" id="Disbursed" value="disbursed" class="status_at">
+  
+          <label for="Disbursed" class="status_at">Disbursed date range</label>
+  
+  
+      </div>
+  
+      <div class="date_fields" style="display: none;">
+  
+        <ul id="date-shortcuts">
+          <li><a class="this_year_link js-disbursement_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Year</a></li>
+          <li><a class="this_month_link js-disbursement_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Month</a></li>
+          <li><a class="last_month_link js-disbursement_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Last Month</a></li>
+          <li><a class="past_thirty_days js-disbursement_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Past 30 Days</a></li>
+          <li><a class="today_link js-disbursement_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Today</a></li>
+          <li><a class="custom js-disbursement_date-date-shortcut" href="#" pa-marked="1">Custom</a></li>
+        </ul>
+  
+        <div class="date-pickers">
+          <label for="search[disbursement_date][min]">Start</label>
+          <div class="date-picker-start">
+            <input type="text" name="search[disbursement_date][min]" id="search_disbursement_date_min" value="09/01/2025" class="datepicker short_text_field search_min hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">        </div>
+          <label>End</label>
+          <div class="date-picker-end">
+            <input type="text" name="search[disbursement_date][max]" id="search_disbursement_date_max" value="09/30/2025" class="datepicker short_text_field search_max hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+          
+  <div class="block">
+    <div class="date_range">
+  
+      <div>
+  
+          <input type="checkbox" name="search[dispute_date][checked]" id="Disputed" value="disputed" class="status_at">
+  
+          <label for="Disputed" class="status_at">Disputed date range</label>
+  
+  
+      </div>
+  
+      <div class="date_fields" style="display: none;">
+  
+        <ul id="date-shortcuts">
+          <li><a class="this_year_link js-dispute_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Year</a></li>
+          <li><a class="this_month_link js-dispute_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">This Month</a></li>
+          <li><a class="last_month_link js-dispute_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Last Month</a></li>
+          <li><a class="past_thirty_days js-dispute_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Past 30 Days</a></li>
+          <li><a class="today_link js-dispute_date-date-shortcut" href="#" onclick="; return false;" pa-marked="1">Today</a></li>
+          <li><a class="custom js-dispute_date-date-shortcut" href="#" pa-marked="1">Custom</a></li>
+        </ul>
+  
+        <div class="date-pickers">
+          <label for="search[dispute_date][min]">Start</label>
+          <div class="date-picker-start">
+            <input type="text" name="search[dispute_date][min]" id="search_dispute_date_min" value="09/01/2025" class="datepicker short_text_field search_min hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">        </div>
+          <label>End</label>
+          <div class="date-picker-end">
+            <input type="text" name="search[dispute_date][max]" id="search_dispute_date_max" value="09/30/2025" class="datepicker short_text_field search_max hasDatepicker" disabled=""><img class="ui-datepicker-trigger" src="https://gstatic.braintreegateway.com/assets/icon-cal-cdcbd79e606f8311225e00a1cae0dc572b6668931dd5fcddbf7f6794b874c47c.png" alt="..." title="...">        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+    <p class="footer-nav clearfix">
+      <input type="submit" name="commit" value="Search" class="btn btn_primary js-search-transactions" pa-marked="1">
+    </p>
+  </form>
+        </div>
+      </div>
+    </div>
+  
+      <footer class="main_footer">
+        <span class="copyright">©2008-2025 Braintree, a division of PayPal, Inc. All rights reserved.</span>
+        <button onclick="manageCookiePreferences()" pa-marked="1">Manage Cookies</button>
+      </footer>
+  
+  
+  
+      <div id="purge-sandbox-modal" class="bt-modal">
+    <h2>Purge Sandbox Data?</h2>
+  <a class="bt-modal-close-btn" pa-marked="1"><span></span></a></div>
+  
+  <script>
+  //<![CDATA[
+  
+    var purgeSandboxModal = new BTModal("#purge-sandbox-modal");
+  
+  //]]>
+  </script><div id="bt-modal-bg"></div>
+      <div class="modal modal__multi-step" id="phone-modal" style="">
+    <div class="modal__frame modal--medium" style="">
+      <div class="modal__header">
+        <button data-slider-prev="" class="modal__header-back disabled" pa-marked="1">‹</button>
+        <div class="modal__header-title">Add a phone number</div>
+        <button data-slider-close="" class="modal__header-close" data-modal-close="" pa-marked="1">×</button>
+      </div>
+  
+      <div class="modal__content" style="">
+        <ul class="slider" style="">
+          <li class="slider__item is-active" data-slider-slide="">
+            <div class="slider__item-inner">
+              <p class="u-text-body">Add a mobile number for easy and secure password resets. We'll send you a quick text to confirm.</p>
+              <p class="u-text-body">To get started, please enter your password.</p>
+              <form id="phone-number-verify-password" class="single-input-form no_autocomplete" action="/reactivate_session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>              <label class="input__label">
+                  <span class="inline-error-message">Incorrect password.</span>
+                  <input class="input__text input__text--rounded input__text--full" type="password" id="phone_number_verify_password" name="password" placeholder="Your Password" required="required" autocomplete="current-password">
+                </label>
+  </form>          </div>
+          </li>
+          <li class="slider__item" data-slider-slide="" style="">
+            <div class="slider__item-inner" style="">
+              <h4>Enter mobile phone number</h4>
+              <p class="u-text-small">We'll use this number for secure password resets.</p>
+              <form id="phone-number-enter-phone" class="single-input-form" style="">
+  
+                <input type="hidden" id="phone_number_verified_password" name="user_current_password">
+                <div class="phone__entry" style="">
+                  <span class="inline-error-message">Invalid phone number.</span>
+                  <div class="selector" id="uniform-phoneNumberCustomCountryDropdown" style="width: 90px;"><span style="width: 88px; user-select: none;">United States</span><select name="country" id="phoneNumberCustomCountryDropdown" class="phone_select" style=""><option value="93">Afghanistan</option>
+  <option value="355">Albania</option>
+  <option value="213">Algeria</option>
+  <option value="1">American Samoa</option>
+  <option value="376">Andorra</option>
+  <option value="244">Angola</option>
+  <option value="1">Anguilla</option>
+  <option value="672">Antarctica</option>
+  <option value="1">Antigua and Barbuda</option>
+  <option value="54">Argentina</option>
+  <option value="374">Armenia</option>
+  <option value="297">Aruba</option>
+  <option value="61">Australia</option>
+  <option value="43">Austria</option>
+  <option value="994">Azerbaijan</option>
+  <option value="1">Bahamas</option>
+  <option value="973">Bahrain</option>
+  <option value="880">Bangladesh</option>
+  <option value="1">Barbados</option>
+  <option value="375">Belarus</option>
+  <option value="32">Belgium</option>
+  <option value="501">Belize</option>
+  <option value="229">Benin</option>
+  <option value="1">Bermuda</option>
+  <option value="975">Bhutan</option>
+  <option value="591">Bolivia</option>
+  <option value="599">Bonaire, Sint Eustatius and Saba</option>
+  <option value="387">Bosnia and Herzegovina</option>
+  <option value="267">Botswana</option>
+  <option value="47">Bouvet Island</option>
+  <option value="55">Brazil</option>
+  <option value="246">British Indian Ocean Territory</option>
+  <option value="673">Brunei Darussalam</option>
+  <option value="359">Bulgaria</option>
+  <option value="226">Burkina Faso</option>
+  <option value="257">Burundi</option>
+  <option value="238">Cabo Verde</option>
+  <option value="855">Cambodia</option>
+  <option value="237">Cameroon</option>
+  <option value="1">Canada</option>
+  <option value="1">Cayman Islands</option>
+  <option value="236">Central African Republic</option>
+  <option value="235">Chad</option>
+  <option value="56">Chile</option>
+  <option value="86">China</option>
+  <option value="61">Christmas Island</option>
+  <option value="61">Cocos (Keeling) Islands</option>
+  <option value="57">Colombia</option>
+  <option value="269">Comoros</option>
+  <option value="242">Congo</option>
+  <option value="243">Congo, The Democratic Republic of the</option>
+  <option value="682">Cook Islands</option>
+  <option value="506">Costa Rica</option>
+  <option value="385">Croatia</option>
+  <option value="53">Cuba</option>
+  <option value="599">Curaçao</option>
+  <option value="357">Cyprus</option>
+  <option value="420">Czechia</option>
+  <option value="225">Côte d'Ivoire</option>
+  <option value="45">Denmark</option>
+  <option value="253">Djibouti</option>
+  <option value="1">Dominica</option>
+  <option value="1">Dominican Republic</option>
+  <option value="593">Ecuador</option>
+  <option value="20">Egypt</option>
+  <option value="503">El Salvador</option>
+  <option value="240">Equatorial Guinea</option>
+  <option value="291">Eritrea</option>
+  <option value="372">Estonia</option>
+  <option value="268">Eswatini</option>
+  <option value="251">Ethiopia</option>
+  <option value="500">Falkland Islands (Malvinas)</option>
+  <option value="298">Faroe Islands</option>
+  <option value="679">Fiji</option>
+  <option value="358">Finland</option>
+  <option value="33">France</option>
+  <option value="594">French Guiana</option>
+  <option value="689">French Polynesia</option>
+  <option value="262">French Southern Territories</option>
+  <option value="241">Gabon</option>
+  <option value="220">Gambia</option>
+  <option value="995">Georgia</option>
+  <option value="49">Germany</option>
+  <option value="233">Ghana</option>
+  <option value="350">Gibraltar</option>
+  <option value="30">Greece</option>
+  <option value="299">Greenland</option>
+  <option value="1">Grenada</option>
+  <option value="590">Guadeloupe</option>
+  <option value="1">Guam</option>
+  <option value="502">Guatemala</option>
+  <option value="44">Guernsey</option>
+  <option value="224">Guinea</option>
+  <option value="245">Guinea-Bissau</option>
+  <option value="592">Guyana</option>
+  <option value="509">Haiti</option>
+  <option value="672">Heard Island and McDonald Islands</option>
+  <option value="39">Holy See (Vatican City State)</option>
+  <option value="504">Honduras</option>
+  <option value="852">Hong Kong</option>
+  <option value="36">Hungary</option>
+  <option value="354">Iceland</option>
+  <option value="91">India</option>
+  <option value="62">Indonesia</option>
+  <option value="98">Iran</option>
+  <option value="964">Iraq</option>
+  <option value="353">Ireland</option>
+  <option value="44">Isle of Man</option>
+  <option value="972">Israel</option>
+  <option value="39">Italy</option>
+  <option value="1">Jamaica</option>
+  <option value="81">Japan</option>
+  <option value="44">Jersey</option>
+  <option value="962">Jordan</option>
+  <option value="7">Kazakhstan</option>
+  <option value="254">Kenya</option>
+  <option value="686">Kiribati</option>
+  <option value="965">Kuwait</option>
+  <option value="996">Kyrgyzstan</option>
+  <option value="856">Lao People's Democratic Republic</option>
+  <option value="371">Latvia</option>
+  <option value="961">Lebanon</option>
+  <option value="266">Lesotho</option>
+  <option value="231">Liberia</option>
+  <option value="218">Libya</option>
+  <option value="423">Liechtenstein</option>
+  <option value="370">Lithuania</option>
+  <option value="352">Luxembourg</option>
+  <option value="853">Macao</option>
+  <option value="261">Madagascar</option>
+  <option value="265">Malawi</option>
+  <option value="60">Malaysia</option>
+  <option value="960">Maldives</option>
+  <option value="223">Mali</option>
+  <option value="356">Malta</option>
+  <option value="692">Marshall Islands</option>
+  <option value="596">Martinique</option>
+  <option value="222">Mauritania</option>
+  <option value="230">Mauritius</option>
+  <option value="262">Mayotte</option>
+  <option value="52">Mexico</option>
+  <option value="691">Micronesia, Federated States of</option>
+  <option value="373">Moldova</option>
+  <option value="377">Monaco</option>
+  <option value="976">Mongolia</option>
+  <option value="382">Montenegro</option>
+  <option value="1">Montserrat</option>
+  <option value="212">Morocco</option>
+  <option value="258">Mozambique</option>
+  <option value="95">Myanmar</option>
+  <option value="264">Namibia</option>
+  <option value="674">Nauru</option>
+  <option value="977">Nepal</option>
+  <option value="31">Netherlands</option>
+  <option value="687">New Caledonia</option>
+  <option value="64">New Zealand</option>
+  <option value="505">Nicaragua</option>
+  <option value="227">Niger</option>
+  <option value="234">Nigeria</option>
+  <option value="683">Niue</option>
+  <option value="672">Norfolk Island</option>
+  <option value="850">North Korea</option>
+  <option value="389">North Macedonia</option>
+  <option value="1">Northern Mariana Islands</option>
+  <option value="47">Norway</option>
+  <option value="968">Oman</option>
+  <option value="92">Pakistan</option>
+  <option value="680">Palau</option>
+  <option value="970">Palestine, State of</option>
+  <option value="507">Panama</option>
+  <option value="675">Papua New Guinea</option>
+  <option value="595">Paraguay</option>
+  <option value="51">Peru</option>
+  <option value="63">Philippines</option>
+  <option value="64">Pitcairn</option>
+  <option value="48">Poland</option>
+  <option value="351">Portugal</option>
+  <option value="1">Puerto Rico</option>
+  <option value="974">Qatar</option>
+  <option value="40">Romania</option>
+  <option value="7">Russian Federation</option>
+  <option value="250">Rwanda</option>
+  <option value="262">Réunion</option>
+  <option value="590">Saint Barthélemy</option>
+  <option value="290">Saint Helena, Ascension and Tristan da Cunha</option>
+  <option value="1">Saint Kitts and Nevis</option>
+  <option value="1">Saint Lucia</option>
+  <option value="590">Saint Martin (French part)</option>
+  <option value="508">Saint Pierre and Miquelon</option>
+  <option value="1">Saint Vincent and the Grenadines</option>
+  <option value="685">Samoa</option>
+  <option value="378">San Marino</option>
+  <option value="239">Sao Tome and Principe</option>
+  <option value="966">Saudi Arabia</option>
+  <option value="221">Senegal</option>
+  <option value="381">Serbia</option>
+  <option value="248">Seychelles</option>
+  <option value="232">Sierra Leone</option>
+  <option value="65">Singapore</option>
+  <option value="1">Sint Maarten (Dutch part)</option>
+  <option value="421">Slovakia</option>
+  <option value="386">Slovenia</option>
+  <option value="677">Solomon Islands</option>
+  <option value="252">Somalia</option>
+  <option value="27">South Africa</option>
+  <option value="500">South Georgia and the South Sandwich Islands</option>
+  <option value="82">South Korea</option>
+  <option value="211">South Sudan</option>
+  <option value="34">Spain</option>
+  <option value="94">Sri Lanka</option>
+  <option value="249">Sudan</option>
+  <option value="597">Suriname</option>
+  <option value="47">Svalbard and Jan Mayen</option>
+  <option value="46">Sweden</option>
+  <option value="41">Switzerland</option>
+  <option value="963">Syrian Arab Republic</option>
+  <option value="886">Taiwan</option>
+  <option value="992">Tajikistan</option>
+  <option value="255">Tanzania</option>
+  <option value="66">Thailand</option>
+  <option value="670">Timor-Leste</option>
+  <option value="228">Togo</option>
+  <option value="690">Tokelau</option>
+  <option value="676">Tonga</option>
+  <option value="1">Trinidad and Tobago</option>
+  <option value="216">Tunisia</option>
+  <option value="90">Turkey</option>
+  <option value="993">Turkmenistan</option>
+  <option value="1">Turks and Caicos Islands</option>
+  <option value="688">Tuvalu</option>
+  <option value="256">Uganda</option>
+  <option value="380">Ukraine</option>
+  <option value="971">United Arab Emirates</option>
+  <option value="44">United Kingdom</option>
+  <option value="1" selected="selected">United States</option>
+  <option value="1">United States Minor Outlying Islands</option>
+  <option value="598">Uruguay</option>
+  <option value="998">Uzbekistan</option>
+  <option value="678">Vanuatu</option>
+  <option value="58">Venezuela</option>
+  <option value="84">Vietnam</option>
+  <option value="1">Virgin Islands, British</option>
+  <option value="1">Virgin Islands, U.S.</option>
+  <option value="681">Wallis and Futuna</option>
+  <option value="212">Western Sahara</option>
+  <option value="967">Yemen</option>
+  <option value="260">Zambia</option>
+  <option value="263">Zimbabwe</option>
+  <option value="358">Åland Islands</option></select></div>
+                  <input id="phone-number-phone-field" type="tel" class="input__text input__text--full input__text--rounded" placeholder="Phone Number" maxlength="14">
+                </div>
+              </form>
+            </div>
+          </li>
+          <li class="slider__item" data-slider-slide="">
+            <div class="slider__item-inner">
+              <p class="u-text-body">We're texting you a confirmation code, please enter it below.</p>
+              <form id="phone-number-confirm-phone" class="single-input-form">
+                <label class="input__label">
+                  <span class="inline-error-message">Incorrect confirmation code.</span>
+                  <input type="text" id="phone-number-confirm-code" class="input__text input__text--full input__text--rounded" name="confirm_code" placeholder="Confirm Code" maxlength="6">
+                </label>
+              </form>
+              <p class="retry-message">
+                Didn't receive a code? <a id="retry-phone-confirm" class="retry" href="#" pa-marked="1">Try again</a>
+                <span class="u-text-center inline-error-message">Oops, something went wrong</span>
+                <span class="u-text-center inline-info-message">Sent ✓ </span>
+              </p>
+            </div>
+          </li>
+          <li class="slider__item" data-slider-slide="">
+            <div class="slider__item-inner">
+              <p class="u-text-body">You're all done</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+  
+      <div class="modal__footer">
+        <a href="#" data-slider-next="" class="modal__step-nav__button modal__step-nav__button--full" pa-marked="1">
+          <span class="button-text">Next</span>
+          <span class="button-spinner"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+      <div class="modal modal__multi-step" id="remove-phone-number-modal">
+    <div class="modal__frame modal--medium">
+  
+      <div class="modal__header">
+        <button data-slider-close="" class="modal__header-close" data-modal-close="" pa-marked="1">×</button>
+        <div class="modal__header-title">Remove Phone Number</div>
+      </div>
+  
+      <div class="modal__content">
+        <p class="u-text-body">Enter your password to remove your phone number.</p>
+        <form id="remove-phone-number-password-verify" class="no_autocomplete single-input-form" action="/reactivate_session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>        <label class="input__label">
+            <span class="inline-error-message">Incorrect password.</span>
+            <input class="input__text input__text--rounded input__text--full" type="password" id="remove_phone_verify_password" name="password" placeholder="Your Password" required="required" autocomplete="current-password">
+          </label>
+  </form>      <p class="u-text-small u-text-color-light u-top--1">If you remove your phone number, you will not be able to use it for password resets. <strong></strong></p>
+      </div>
+  
+      <div class="modal__footer">
+        <a href="#" id="submit_remove_phone_number" class="modal__step-nav__button--negative modal__step-nav__button--full" pa-marked="1">
+          <span class="button-text">Remove Phone Number</span>
+          <span class="button-spinner"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+      <div class="modal modal__multi-step" id="edit-email-modal">
+    <div class="modal__frame modal--medium">
+  
+      <div class="modal__header">
+        <button data-slider-prev="" class="modal__header-back" pa-marked="1">‹</button>
+        <div class="modal__header-title">Edit Email Address</div>
+        <button data-slider-close="" class="modal__header-close" data-modal-close="" pa-marked="1">×</button>
+      </div>
+  
+      <div class="modal__content">
+        <ul class="slider">
+          <li class="slider__item" data-slider-slide="">
+            <div class="slider__item-inner">
+              <p class="u-text-body">For security, please enter your password</p>
+              <form id="edit-email-verify-password" class="single-input-form no_autocomplete" action="/reactivate_session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>              <label class="input__label">
+                  <span class="inline-error-message">Incorrect password.</span>
+                  <input class="input__text input__text--rounded input__text--full" type="password" id="edit_email_verify_password" name="password" placeholder="Your Password" required="required" autocomplete="current-password">
+                </label>
+  </form>          </div>
+          </li>
+          <li class="slider__item" data-slider-slide="">
+            <div class="slider__item-inner">
+              <p class="u-text-body">Enter your new email address</p>
+              <form id="new-email-form" class="single-input-form no-autocomplete" action="/users/g7mf3948rpxxsym4/initiate_email_change" accept-charset="UTF-8" method="post"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="_method" value="put"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>              <input type="hidden" id="edit_email_verified_password" name="user_current_password">
+                <label class="input__label">
+                  <span class="inline-error-message"></span>
+                  <input type="text" class="input__text input__text--full input__text--rounded" id="new-email" name="email" placeholder="Email Address" required="required">
+                </label>
+  </form>          </div>
+          </li>
+          <li class="slider__item" data-slider-slide="">
+            <div class="slider__item-inner">
+              <i class="icon-checkmark"></i>
+              <p>We have sent an email with a confirmation link to your new address. Your email address will not be changed until you verify your new email address.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+  
+      <div class="modal__footer">
+        <a href="#" data-slider-next="" class="modal__step-nav__button modal__step-nav__button--full" pa-marked="1">
+          <span class="button-text">Next</span>
+          <span class="button-spinner"></span>
+        </a>
+      </div>
+  
+    </div>
+  </div>
+  
+      <div class="modal modal__multi-step" id="two-factor-auth-modal" style="">
+    <div class="modal__frame modal--medium" style="">
+      <div class="modal__header">
+        <div class="modal__header-title">Two-Factor Authentication</div>
+        <button data-slider-close="" class="modal__header-close" data-cancel-enable-2fa="" onclick="setupAnalytics.trackClick('dismiss')" pa-marked="1">×</button>
+      </div>
+  
+      <div class="modal__content" style="">
+      <ul class="slider two_factor_modal_container" style="">
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <p class="u-text-body">For security, please enter your password</p>
+        <form id="2fa-verify-password" class="single-input-form no_autocomplete" action="/reactivate_session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>        <label class="full_width">
+            <span class="inline-error-message">Incorrect password.</span>
+            <input type="password" id="2fa_verify_password" name="password" placeholder="Your Password" required="required" autocomplete="current-password">
+          </label>
+  </form>    </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <p>Add an extra security layer to your account by enabling two-factor authentication. Use a third-party authenticator app, or receive single-use security codes by text. <strong><a class="link link-primary" target="_blank" onclick="setupAnalytics.trackClick('more_about_2fa')" href="https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication#authenticator-apps" pa-marked="1">More about 2FA</a></strong></p>
+        <div class="two_factor_types">
+          <label>
+            <input type="radio" name="two_factor_type" value="qrcode" checked="">
+            <span>Use an authenticator app <span class="two_factor_recommended_type">Recommended</span></span>
+          </label>
+          <label>
+            <input type="radio" name="two_factor_type" value="sms_phone_number">
+            <span>Get single-use security codes by text message</span>
+          </label>
+        </div>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <p>For two-factor authentication with an app, download and install a supported app on your mobile device such as:</p>
+        <ul>
+          <li><a class="link link-primary link-heavy" target="_blank" href="https://support.google.com/accounts/answer/1066447" pa-marked="1">Google Authenticator</a></li>
+          <li><a class="link link-primary link-heavy" target="_blank" href="https://authy.com" pa-marked="1">Authy</a></li>
+          <li><a class="link link-primary link-heavy" target="_blank" href="https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app" pa-marked="1">Duo Mobile</a></li>
+          <li><a class="link link-primary link-heavy" target="_blank" href="https://apps.microsoft.com/store/apps" pa-marked="1">Microsoft Authenticator</a></li>
+        </ul>
+        <p>Once the app is installed, choose ‘Next’. You’ll then get a QR code to begin authentication. <strong><a class="link link-primary" target="_blank" onclick="setupAnalytics.trackClick('more_about_2fa')" href="https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication#authenticator-apps" pa-marked="1">More about 2FA</a></strong></p>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <p>Generate a unique security code by scanning the QR code with your authentication app. <strong><a class="link link-primary" target="_blank" onclick="setupAnalytics.trackClick('more_about_2fa')" href="https://developer.paypal.com/braintree/articles/risk-and-security/control-panel-security/two-factor-authentication#authenticator-apps" pa-marked="1">More about 2FA</a></strong></p>
+        <div id="two-factor-qr-code"></div>
+        <p><a href="#" class="link link-primary" id="show-2fa-secret" pa-marked="1">Problem scanning the QR code?</a></p>
+        <div id="two-factor-manual-entry" class="hidden">
+          <p>Enter this code into your authentication app:</p>
+          <input readonly="" id="two-factor-text-secret">
+        </div>
+        <p>Want to use SMS instead? <a href="#" class="skip-to-phone link link-primary link-heavy" onclick="setupAnalytics.trackClick('text_me_a_code')" pa-marked="1">Text me a code</a></p>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <p class="u-text-body">Enter the six-digit security code from your authenticator app.</p>
+        <form id="verify-two-factor-secret-form" class="single-input-form">
+          <input type="hidden" id="user_two_factor_secret" name="user_two_factor_secret">
+          <input type="hidden" id="2fa_verified_password" name="user_current_password">
+          <label class="full_width">
+            <span class="inline-error-message">Incorrect security code.</span>
+            <input type="text" id="confirm_two_factor_code" name="confirm_two_factor_code" placeholder="Code from your app" required="required" autocomplete="one-time-code">
+          </label>
+        </form>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="" style="">
+      <div class="slider__item-inner" style="">
+        <header class="two_factor_header">
+          <h2 class="qrcode">Confirm your phone number</h2>
+          <h2 class="sms_phone_number">Enter your mobile phone number</h2>
+        </header>
+        <p class="u-text-body qrcode">For added security, we just need to verify your mobile phone number. If your authenticator app doesn’t work, we can send a security code to your phone instead. Standard text messaging rates may apply.</p>
+        <p class="u-text-body sms_phone_number">We’ll send single-use security codes to your phone each time you log in. Standard text messaging rates may apply.</p>
+        <form id="2fa-enter-phone" class="single-input-form" style="">
+          <span class="inline-error-message">Invalid phone number.</span>
+          <div class="phone__entry" style="">
+            <div class="selector" id="uniform-2faCustomCountryDropdown" style="width: 90px;"><span style="width: 88px; user-select: none;">United States</span><select name="country" id="2faCustomCountryDropdown" class="phone_select" style=""><option value="93">Afghanistan</option>
+  <option value="355">Albania</option>
+  <option value="213">Algeria</option>
+  <option value="1">American Samoa</option>
+  <option value="376">Andorra</option>
+  <option value="244">Angola</option>
+  <option value="1">Anguilla</option>
+  <option value="672">Antarctica</option>
+  <option value="1">Antigua and Barbuda</option>
+  <option value="54">Argentina</option>
+  <option value="374">Armenia</option>
+  <option value="297">Aruba</option>
+  <option value="61">Australia</option>
+  <option value="43">Austria</option>
+  <option value="994">Azerbaijan</option>
+  <option value="1">Bahamas</option>
+  <option value="973">Bahrain</option>
+  <option value="880">Bangladesh</option>
+  <option value="1">Barbados</option>
+  <option value="375">Belarus</option>
+  <option value="32">Belgium</option>
+  <option value="501">Belize</option>
+  <option value="229">Benin</option>
+  <option value="1">Bermuda</option>
+  <option value="975">Bhutan</option>
+  <option value="591">Bolivia</option>
+  <option value="599">Bonaire, Sint Eustatius and Saba</option>
+  <option value="387">Bosnia and Herzegovina</option>
+  <option value="267">Botswana</option>
+  <option value="47">Bouvet Island</option>
+  <option value="55">Brazil</option>
+  <option value="246">British Indian Ocean Territory</option>
+  <option value="673">Brunei Darussalam</option>
+  <option value="359">Bulgaria</option>
+  <option value="226">Burkina Faso</option>
+  <option value="257">Burundi</option>
+  <option value="238">Cabo Verde</option>
+  <option value="855">Cambodia</option>
+  <option value="237">Cameroon</option>
+  <option value="1">Canada</option>
+  <option value="1">Cayman Islands</option>
+  <option value="236">Central African Republic</option>
+  <option value="235">Chad</option>
+  <option value="56">Chile</option>
+  <option value="86">China</option>
+  <option value="61">Christmas Island</option>
+  <option value="61">Cocos (Keeling) Islands</option>
+  <option value="57">Colombia</option>
+  <option value="269">Comoros</option>
+  <option value="242">Congo</option>
+  <option value="243">Congo, The Democratic Republic of the</option>
+  <option value="682">Cook Islands</option>
+  <option value="506">Costa Rica</option>
+  <option value="385">Croatia</option>
+  <option value="53">Cuba</option>
+  <option value="599">Curaçao</option>
+  <option value="357">Cyprus</option>
+  <option value="420">Czechia</option>
+  <option value="225">Côte d'Ivoire</option>
+  <option value="45">Denmark</option>
+  <option value="253">Djibouti</option>
+  <option value="1">Dominica</option>
+  <option value="1">Dominican Republic</option>
+  <option value="593">Ecuador</option>
+  <option value="20">Egypt</option>
+  <option value="503">El Salvador</option>
+  <option value="240">Equatorial Guinea</option>
+  <option value="291">Eritrea</option>
+  <option value="372">Estonia</option>
+  <option value="268">Eswatini</option>
+  <option value="251">Ethiopia</option>
+  <option value="500">Falkland Islands (Malvinas)</option>
+  <option value="298">Faroe Islands</option>
+  <option value="679">Fiji</option>
+  <option value="358">Finland</option>
+  <option value="33">France</option>
+  <option value="594">French Guiana</option>
+  <option value="689">French Polynesia</option>
+  <option value="262">French Southern Territories</option>
+  <option value="241">Gabon</option>
+  <option value="220">Gambia</option>
+  <option value="995">Georgia</option>
+  <option value="49">Germany</option>
+  <option value="233">Ghana</option>
+  <option value="350">Gibraltar</option>
+  <option value="30">Greece</option>
+  <option value="299">Greenland</option>
+  <option value="1">Grenada</option>
+  <option value="590">Guadeloupe</option>
+  <option value="1">Guam</option>
+  <option value="502">Guatemala</option>
+  <option value="44">Guernsey</option>
+  <option value="224">Guinea</option>
+  <option value="245">Guinea-Bissau</option>
+  <option value="592">Guyana</option>
+  <option value="509">Haiti</option>
+  <option value="672">Heard Island and McDonald Islands</option>
+  <option value="39">Holy See (Vatican City State)</option>
+  <option value="504">Honduras</option>
+  <option value="852">Hong Kong</option>
+  <option value="36">Hungary</option>
+  <option value="354">Iceland</option>
+  <option value="91">India</option>
+  <option value="62">Indonesia</option>
+  <option value="98">Iran</option>
+  <option value="964">Iraq</option>
+  <option value="353">Ireland</option>
+  <option value="44">Isle of Man</option>
+  <option value="972">Israel</option>
+  <option value="39">Italy</option>
+  <option value="1">Jamaica</option>
+  <option value="81">Japan</option>
+  <option value="44">Jersey</option>
+  <option value="962">Jordan</option>
+  <option value="7">Kazakhstan</option>
+  <option value="254">Kenya</option>
+  <option value="686">Kiribati</option>
+  <option value="965">Kuwait</option>
+  <option value="996">Kyrgyzstan</option>
+  <option value="856">Lao People's Democratic Republic</option>
+  <option value="371">Latvia</option>
+  <option value="961">Lebanon</option>
+  <option value="266">Lesotho</option>
+  <option value="231">Liberia</option>
+  <option value="218">Libya</option>
+  <option value="423">Liechtenstein</option>
+  <option value="370">Lithuania</option>
+  <option value="352">Luxembourg</option>
+  <option value="853">Macao</option>
+  <option value="261">Madagascar</option>
+  <option value="265">Malawi</option>
+  <option value="60">Malaysia</option>
+  <option value="960">Maldives</option>
+  <option value="223">Mali</option>
+  <option value="356">Malta</option>
+  <option value="692">Marshall Islands</option>
+  <option value="596">Martinique</option>
+  <option value="222">Mauritania</option>
+  <option value="230">Mauritius</option>
+  <option value="262">Mayotte</option>
+  <option value="52">Mexico</option>
+  <option value="691">Micronesia, Federated States of</option>
+  <option value="373">Moldova</option>
+  <option value="377">Monaco</option>
+  <option value="976">Mongolia</option>
+  <option value="382">Montenegro</option>
+  <option value="1">Montserrat</option>
+  <option value="212">Morocco</option>
+  <option value="258">Mozambique</option>
+  <option value="95">Myanmar</option>
+  <option value="264">Namibia</option>
+  <option value="674">Nauru</option>
+  <option value="977">Nepal</option>
+  <option value="31">Netherlands</option>
+  <option value="687">New Caledonia</option>
+  <option value="64">New Zealand</option>
+  <option value="505">Nicaragua</option>
+  <option value="227">Niger</option>
+  <option value="234">Nigeria</option>
+  <option value="683">Niue</option>
+  <option value="672">Norfolk Island</option>
+  <option value="850">North Korea</option>
+  <option value="389">North Macedonia</option>
+  <option value="1">Northern Mariana Islands</option>
+  <option value="47">Norway</option>
+  <option value="968">Oman</option>
+  <option value="92">Pakistan</option>
+  <option value="680">Palau</option>
+  <option value="970">Palestine, State of</option>
+  <option value="507">Panama</option>
+  <option value="675">Papua New Guinea</option>
+  <option value="595">Paraguay</option>
+  <option value="51">Peru</option>
+  <option value="63">Philippines</option>
+  <option value="64">Pitcairn</option>
+  <option value="48">Poland</option>
+  <option value="351">Portugal</option>
+  <option value="1">Puerto Rico</option>
+  <option value="974">Qatar</option>
+  <option value="40">Romania</option>
+  <option value="7">Russian Federation</option>
+  <option value="250">Rwanda</option>
+  <option value="262">Réunion</option>
+  <option value="590">Saint Barthélemy</option>
+  <option value="290">Saint Helena, Ascension and Tristan da Cunha</option>
+  <option value="1">Saint Kitts and Nevis</option>
+  <option value="1">Saint Lucia</option>
+  <option value="590">Saint Martin (French part)</option>
+  <option value="508">Saint Pierre and Miquelon</option>
+  <option value="1">Saint Vincent and the Grenadines</option>
+  <option value="685">Samoa</option>
+  <option value="378">San Marino</option>
+  <option value="239">Sao Tome and Principe</option>
+  <option value="966">Saudi Arabia</option>
+  <option value="221">Senegal</option>
+  <option value="381">Serbia</option>
+  <option value="248">Seychelles</option>
+  <option value="232">Sierra Leone</option>
+  <option value="65">Singapore</option>
+  <option value="1">Sint Maarten (Dutch part)</option>
+  <option value="421">Slovakia</option>
+  <option value="386">Slovenia</option>
+  <option value="677">Solomon Islands</option>
+  <option value="252">Somalia</option>
+  <option value="27">South Africa</option>
+  <option value="500">South Georgia and the South Sandwich Islands</option>
+  <option value="82">South Korea</option>
+  <option value="211">South Sudan</option>
+  <option value="34">Spain</option>
+  <option value="94">Sri Lanka</option>
+  <option value="249">Sudan</option>
+  <option value="597">Suriname</option>
+  <option value="47">Svalbard and Jan Mayen</option>
+  <option value="46">Sweden</option>
+  <option value="41">Switzerland</option>
+  <option value="963">Syrian Arab Republic</option>
+  <option value="886">Taiwan</option>
+  <option value="992">Tajikistan</option>
+  <option value="255">Tanzania</option>
+  <option value="66">Thailand</option>
+  <option value="670">Timor-Leste</option>
+  <option value="228">Togo</option>
+  <option value="690">Tokelau</option>
+  <option value="676">Tonga</option>
+  <option value="1">Trinidad and Tobago</option>
+  <option value="216">Tunisia</option>
+  <option value="90">Turkey</option>
+  <option value="993">Turkmenistan</option>
+  <option value="1">Turks and Caicos Islands</option>
+  <option value="688">Tuvalu</option>
+  <option value="256">Uganda</option>
+  <option value="380">Ukraine</option>
+  <option value="971">United Arab Emirates</option>
+  <option value="44">United Kingdom</option>
+  <option value="1" selected="selected">United States</option>
+  <option value="1">United States Minor Outlying Islands</option>
+  <option value="598">Uruguay</option>
+  <option value="998">Uzbekistan</option>
+  <option value="678">Vanuatu</option>
+  <option value="58">Venezuela</option>
+  <option value="84">Vietnam</option>
+  <option value="1">Virgin Islands, British</option>
+  <option value="1">Virgin Islands, U.S.</option>
+  <option value="681">Wallis and Futuna</option>
+  <option value="212">Western Sahara</option>
+  <option value="967">Yemen</option>
+  <option value="260">Zambia</option>
+  <option value="263">Zimbabwe</option>
+  <option value="358">Åland Islands</option></select></div>
+            <input id="2fa-modal-phone-field" type="tel" class="input__text input__text--full input__text--rounded" placeholder="Phone Number" maxlength="14">
+          </div>
+        </form>
+        <p class="u-text-small">We’ll also use this number for secure password resets.</p>
+        <p class="qrcode">Don't want to use a phone number? <a href="#" data-skip-verify-phone="" class="link link-primary" onclick="setupAnalytics.trackClick('skip_verify_phone')" pa-marked="1">Skip this step</a></p>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <h4>Confirm your phone number</h4>
+        <p>For added security, we just need to verify your phone number. We’ll send a code to <span class="u-text-bold 2fa-existing-phone-number"></span>.<span class="qrcode"> If your authenticator app doesn’t work, we can send a security code to your phone instead.</span> Standard text messaging rates may apply. </p>
+        <p>Not the right phone number? <a href="#" data-clear-existing-number="" class="link link-primary" onclick="setupAnalytics.trackClick('back_to_change_phone_number')" pa-marked="1">Change it</a></p>
+        <p class="qrcode">Don't want to use a phone number? <a href="#" data-skip-verify-phone="" class="link link-primary" onclick="setupAnalytics.trackClick('skip_verify_phone')" pa-marked="1">Skip this step</a></p>
+        <input id="2fa-modal-opt-in" type="hidden" value="true">
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <header class="two_factor_header">
+          <h3 class="qrcode">Confirm your phone number</h3>
+        </header>
+        <p class="u-text-body qrcode">Enter the confirmation code we just texted to <strong class="2fa-existing-phone-number"></strong></p>
+        <p class="u-text-body sms_phone_number">Enter the six-digit security code we just texted to <strong class="2fa-existing-phone-number"></strong></p>
+        <form id="2fa-confirm-phone" class="single-input-form">
+          <label class="full_width">
+            <span class="inline-error-message">Incorrect confirmation code.</span>
+            <input type="text" id="2fa-phone-confirm-code" placeholder="Confirm Code" maxlength="6">
+          </label>
+        </form>
+        <p class="retry-message">
+          Didn't receive a code? <a id="retry-two-factor" class="retry link link-primary link-heavy" href="#" onclick="setupAnalytics.trackClick('send_new_code')" pa-marked="1">Try again</a>
+          <span class="u-text-center inline-error-message">Oops, something went wrong</span>
+          <span class="u-text-center inline-info-message">Sent ✓ </span>
+        </p>
+        <a href="#" data-clear-existing-number="" class="link link-primary prev-button" onclick="setupAnalytics.trackClick('back_to_change_phone_number')" pa-marked="1">
+          <img src="https://gstatic.braintreegateway.com/assets/icons/prev_arrow-e03a80e3c04f3f4742b6404de1b3947955ccab0d5df5f686094537b882e7ea8a.svg"><strong>Wrong phone number? Go back to change it</strong>
+        </a>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <i class="icon-checkmark"></i>
+        <p>Now that you set up two-factor authentication, you’ll enter a single-use security code for added account protection each time you log in.</p>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <i class="icon-error"></i>
+        <p>Due to an error, the reset of two-factor authentication failed. Go ahead and try enabling 2FA again.</p>
+      </div>
+    </li>
+  
+    <li class="slider__item" data-slider-slide="">
+      <div class="slider__item-inner">
+        <div style="display: flex; gap:1rem">
+          <img src="https://gstatic.braintreegateway.com/assets/icons/yield-icon-22992235d99d222a47802bf2550e8962d5e44310fdad62ba9d730915f4cfead5.svg"><strong>Two-factor authentication has been disabled</strong>
+        </div>
+        <p>If you exit while resetting two-factor authentication, you’ll need to enable 2FA before logging back in to Braintree.</p>
+        <input type="hidden" id="2fa-reset-old-index" name="2fa-reset-old-index">
+        <a href="#" class="link skip_reset_2fa_btn" onclick="setupAnalytics.trackClick('exit')" pa-marked="1">Exit reset of 2FA</a>
+      </div>
+    </li>
+  </ul>
+  
+  <script>
+  //<![CDATA[
+    var currentPage = '';
+  
+    function setAnalytics(page) {
+      if(page && !(page == currentPage)) {
+        currentPage = page;
+  
+        var pgrp = $(document).find('[data-2fa-pgrp]').data('2fa-pgrp') || 'main:gateway:mfa'
+        var fltp = $(document).find('[data-2fa-fltp]').data('2fa-fltp') || 'enable_2fa'
+        var pageName = pgrp;
+  
+        if (fltp === 'enable_2fa' || fltp === 'reset_2fa') {
+          pageName += ':mfa';
+        }
+        pageName += ':' + page;
+  
+        setupAnalytics = new PaypalAnalytics(
+          pgrp,
+          pageName,
+          '24z4n6rn88tvynbq',
+          fltp,
+          'not_available'
+        );
+  
+        setupAnalytics.setupPaypalAnalytics();
+      }
+    }
+  
+  //]]>
+  </script>
+      </div>
+  
+      <div class="modal__footer">
+        <a href="#" data-slider-next="" class="modal__step-nav__button modal__step-nav__button--full" ,="" onclick="setupAnalytics.trackClick('next')" pa-marked="1">
+          <span class="button-text">Next</span>
+          <span class="button-spinner"></span>
+        </a>
+        <a href="#" class="modal__step-nav__button modal__step-nav__button--full continue_reset_2fa_btn" style="display:block" onclick="setupAnalytics.trackClick('continue')" pa-marked="1">
+          <span class="button-text">Continue with reset of 2FA</span>
+          <span class="button-spinner"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+      <div class="modal modal__multi-step" id="reset-two-factor-auth-modal">
+    <div class="modal__frame modal--medium">
+  
+      <div class="modal__header">
+        <button data-slider-close="" class="modal__header-close" data-modal-close="" onclick="setupAnalytics.trackClick('dismiss')" pa-marked="1">×</button>
+        <div class="modal__header-title">Reset Two-Factor Authentication</div>
+      </div>
+  
+      <div class="modal__content">
+        <p class="u-text-body">Resetting two-factor authentication will cancel your current 2FA setup. You’ll then be required to re-enable 2FA with an authentication app or single-use security codes received by text message.</p>
+        <p class="u-text-body">Enter your password to reset two-factor authentication.</p>
+        <form id="reset-2fa-verify-password" class="no_autocomplete single-input-form" action="/reactivate_session" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="0BsddhnBg9QcZAlHc10PUFkTDK1JB50HMtriR_HoINRVZwO0Z_sF7JOanerb87q3eScVuCfXBbuwPXxbegRjOg" autocomplete="off"></div>        <label class="input__label">
+            <span class="inline-error-message">Incorrect password.</span>
+            <input class="input__text input__text--rounded input__text--full" type="password" id="reset_2fa_verify_password" name="password" placeholder="Your Password" required="required" autocomplete="current-password">
+          </label>
+  </form>    </div>
+  
+      <div class="modal__footer">
+        <a href="#" id="submit_reset_2fa" class="modal__step-nav__button--negative modal__step-nav__button--full" onclick="setupAnalytics.trackClick('confirm')" pa-marked="1">
+          <span class="button-text">Reset Two-Factor Authentication</span>
+          <span class="button-spinner"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  
+      <script>
+  //<![CDATA[
+  
+        new ScrollableFixedNav({
+          isUnifiedDashboardNav: false,
+          navSelector: "[data-js=scrollable-fixed-nav]",
+          secondaryNavSelector: "[data-js=scrollable-secondary-nav]"
+        });
+  
+  //]]>
+  </script>
+    <script>
+  //<![CDATA[
+  
+      $(document).ready(function() {
+        sessionInactivityTimer({
+          activityCheckInterval: 1 * 60 * 1000,
+          redirect: "/logout_from_session_timeout",
+          verificationPath: "/verify_active_session",
+        });
+      });
+  
+  //]]>
+  </script>  
+  
+  <div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-dialog-buttons" aria-describedby="user_multi_select_dialog" aria-labelledby="ui-id-1" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix"><span id="ui-id-1" class="ui-dialog-title">Select Users</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close" pa-marked="1"><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>Close</button></div><div id="user_multi_select_dialog" class="ui-dialog-content ui-widget-content">
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_0" value="73bbr9j5hmpx889t">          <label for="search_user_0" class="user">VNPSOLUTIONS</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_1" value="q7h7xnhjzrn7gffm">          <label for="search_user_1" class="user">VikVNP</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_2" value="dgm5vjknw42h9885">          <label for="search_user_2" class="user">dhara@vnpsolutions.com</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_3" value="gvtpkbqycbxtv4xc">          <label for="search_user_3" class="user">KiratB</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_4" value="r3bz46yb9vnfdzyx">          <label for="search_user_4" class="user">SimranVNP</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_5" value="68kmchjvbc4zcfx6">          <label for="search_user_5" class="user">Prabhneetvnp</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_6" value="xq76qzjbkr8ykbz7">          <label for="search_user_6" class="user">renujain27@gmail.com</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_7" value="nbrdtt33g4k3fztp">          <label for="search_user_7" class="user">omniatechnologies28@gmail.com</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_8" value="nkdd8v6hgz7mb345">          <label for="search_user_8" class="user">parag@vnpsolution.com</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_9" value="pftgh83qgsc5yk3t">          <label for="search_user_9" class="user">RenuJain</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_10" value="6pd54cqkt8mvbfqh">          <label for="search_user_10" class="user">JayD@vnpsolutions.com</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_11" value="6gztqfpdxwrk42zq">          <label for="search_user_11" class="user">vnpitsupport</label>
+        </div>
+        <div class="user_input_template">
+          <input type="checkbox" name="search[user][]" id="search_user_12" value="g7mf3948rpxxsym4">          <label for="search_user_12" class="user">vnpit-new</label>
+        </div>
+    </div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-corner-all ui-widget" pa-marked="1">Cancel</button><button type="button" class="ui-button ui-corner-all ui-widget" pa-marked="1">OK</button></div></div></div><ul id="ui-id-2" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body></html>

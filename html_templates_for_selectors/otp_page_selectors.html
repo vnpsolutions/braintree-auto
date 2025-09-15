@@ -1,0 +1,197 @@
+<html lang="en" class=" js flexbox no-touch history rgba multiplebgs backgroundsize borderradius boxshadow textshadow opacity cssanimations cssgradients csstransforms csstransitions fontface svg svgclippaths cookies" style=""><!--<![endif]--><head>
+    <title>Braintree Gateway Login | PayPal Braintree</title>
+  
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Braintree Gateway Login | PayPal Braintree">
+    <meta property="og:description" content="Log in to your Braintree account here or find out how you can log in with your PayPal account">
+    <meta name="”description”" content="”Log" in="" to="" your="" braintree="" account="" here="" or="" find="" out="" how="" you="" can="" log="" with="" paypal="" account”="">
+    <meta name="csrf-param" content="authenticity_token">
+  <meta name="csrf-token" content="rX8wa7mdBrx0XMPPtA0_nyHrDaS2Zuaafy5sZ1vIWLgoAy6px6eAhPuiV2Ico4p4Ad8Usdi2fib9yfJ70CQbVg">
+  
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://gstatic.braintreegateway.com/assets/application-d24bcdf605217d59c40892ebe4a664eb2ecb4f3db6fed18acc2529c8326376e2.css" media="screen">
+  
+    <!-- JS -->
+    <script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/pa/mi/paypal/latmconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktgtagmanager.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/pa/mi/paypal/latmconf.js"></script><script crossorigin="anonymous" src="https://www.paypalobjects.com/martech/tm/paypal/mktgtagmanager.js"></script><script src="https://gstatic.braintreegateway.com/assets/bundle.vendor-1973740cf34e864780ccd09f0b1ff9c05f625ab1ee5e97da6b716c6b41d15c2d.js"></script>
+    <script src="https://gstatic.braintreegateway.com/assets/bundle-7e3babc2b39313b8b47f0906c32c8cbd95ce4242874d0ccd0e46d8c0762c7c75.js"></script>
+  
+    <!-- FPTI Client-Side Analytics -->
+      <script src="https://www.paypalobjects.com/pa/js/min/pa.js"></script>
+  
+    <!-- Cookie banner -->
+    <script type="application/json" id="policy-data">
+    {
+      "policies": ["CookieBanner"],
+      "tenant": "braintree",
+      "policyData": { "country":"US", "language":"en" }, "tenantData" : {"cookieDomain":".braintreegateway.com"}
+    }
+  </script>
+  <script src="https://www.paypalobjects.com/ncs/ncs.js"></script><script id="cookieMapping" src="https://www.paypalobjects.com/ncs/braintree/mapping.js"></script>
+  
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="https://gstatic.braintreegateway.com/paypal_braintree_favicon.ico">
+  
+    <!-- FPTI Client-Side Analytics -->
+      <script src="https://www.paypalobjects.com/pa/js/min/pa.js"></script>
+  
+  </head>
+  
+  <body lang="en" class="no-nav login-body unified-panel">
+    <div data-js="notification-alert">
+      
+  <script src="https://gstatic.braintreegateway.com/assets/make_alert_closeable-fca879a01a30d19db7b98828cb87fb43c99fb63dacc5a50cb32c3bc38a93545b.js"></script>
+  
+  <script type="text/javascript">
+    $(document).on(".unified-panel [data-js=closable-alert-button]", function(el){
+      var $alert = $(el).closest(".alert");
+  
+      $(el).click(function() {
+        $alert.remove();
+      });
+  
+      setTimeout(function() {
+        $alert.remove();
+      }, 10000);
+    });
+  
+    var alertsContainer = $("#flash-banner");
+  
+    var showAlert = function(alertHtml){
+      var $alert = $(alertHtml);
+  
+      alertsContainer.prepend($alert);
+  
+      return $alert;
+    };
+  
+    window.AlertNotification = {
+      removeAll: function(){
+        return alertsContainer.find(".alert").remove();
+      },
+  
+      showSuccess: function(message){
+        var alertHtml = "\n<div class=\"alert success\">\n  <div class=\"detail\">\n    <h6>Success<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showErrorToast: function(message){
+        var alertHtml = "\n<div class=\"alert error_toast\">\n  <div class=\"detail\">\n    <h6>Error_toast<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showNotice: function(message){
+        var alertHtml = "\n<div class=\"alert notice\">\n  <div class=\"detail\">\n    <h6>Notice<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+  
+      showError: function(message){
+        var alertHtml = "\n<div class=\"alert error\">\n  <div class=\"detail\">\n    <h6>Error<\/h6>\n    <p>TEMPORARY-MESSAGE<\/p>\n  <\/div>\n<\/div>\n".replaceAll("TEMPORARY-MESSAGE", message);
+        return showAlert(alertHtml);
+      },
+    };
+  </script>
+  
+    </div>
+    <noscript>
+      <div class='alert error'>
+          <div class='detail'>
+          <h6>Error</h6>
+          <p>You need JavaScript enabled to use this application.</p>
+        </div>
+      </div>
+    </noscript>
+  
+    <header class="unified-login__header">
+    <a href="/" class="logo" pa-marked="1">
+      <h1 class="logo_alt_text">PayPal Braintree</h1>
+    </a>
+    <nav class="unified-login__nav">
+      <ul>
+        <li>
+          <a href="https://help.braintreepayments.com/" target="_blank" pa-marked="1">Get Help</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  
+      <script>
+  //<![CDATA[
+    let login2faAnalytics = new PaypalAnalytics(
+      'main:gateway:login',
+      'main:gateway:login:totp_app',
+      'not_available',
+      'login_with_2fa',
+      'g7mf3948rpxxsym4'
+    );
+    $(document).ready(function() {
+      login2faAnalytics.setupPaypalAnalytics();
+    });
+  
+  //]]>
+  </script>
+  <main class="unified-login__content">
+    <div class="wrapper">
+      <h2 class="unified-login__title">
+        Two-Factor Authentication
+      </h2>
+  
+      <form class="no_autocomplete" action="/session/two_factor" accept-charset="UTF-8" method="post" autocomplete="off"><div style="margin:0;padding:0;display:none"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="rX8wa7mdBrx0XMPPtA0_nyHrDaS2Zuaafy5sZ1vIWLgoAy6px6eAhPuiV2Ico4p4Ad8Usdi2fib9yfJ70CQbVg" autocomplete="off"></div>      <label class="input-field">
+    <label for="" class="">
+      Auth Code
+    </label>
+    <div class="input-field__wrapper ">
+      <input autocomplete="one-time-code" autofocus="autofocus" class=" " type="text" id="" name="code" value="" placeholder="" required="" tabindex="1">
+    </div>
+    <div>
+    </div>
+  </label>
+  
+  
+        <input type="submit" name="commit" value="Log in" class="btn btn_primary btn_full_width login-submit-button" tabindex="2" onclick="login2faAnalytics.trackClick('login')" pa-marked="1">
+  
+        <footer>
+            <div id="recaptcha_step_one_container">
+            </div>
+        </footer>
+  </form>  </div>
+  
+  
+   <script type="text/javascript">
+    document.getElementById("auth-code-sender-app").setAttribute("data-js", "login-send-sms");
+   </script>
+  
+  <script type="text/javascript">
+    var successAlertPartial = "\n<div class=\"alert success\">\n  <div class=\"detail\">\n    <h6>Success<\/h6>\n    <p>We\'ve sent an auth code to your phone.<\/p>\n      <span class=\"alert__close\" data-js=\"closable-alert-button\">Close<\/span>\n      <script>\n        document.addEventListener(\'DOMContentLoaded\', function() {\n          makeAlertCloseable(\".unified-panel [data-js=closable-alert-button]\");\n        });\n      <\/script>\n  <\/div>\n<\/div>\n";
+    var errorAlertPartial = "\n<div class=\"alert error\">\n  <div class=\"detail\">\n    <h6>Error<\/h6>\n    <p>We couldn\'t send an auth code to your phone.<\/p>\n  <\/div>\n<\/div>\n";
+  
+    var renderAlert = function(alertPartial) {
+      document.querySelector("[data-js=notification-alert]").innerHTML = alertPartial;
+    }
+  
+    var showSuccessNotification = function() {
+      renderAlert(successAlertPartial);
+      makeAlertCloseable("[data-js=closable-alert-button]");
+    }
+  
+    var showFailureNotification = function() {
+      renderAlert(errorAlertPartial);
+    }
+    var twoFactorLoginParams = {
+      authenticityToken: document.querySelector("[name=authenticity_token]").value,
+      smsLink: document.querySelector("[data-js=login-send-sms]"),
+      onSuccess: showSuccessNotification,
+      onFailure: showFailureNotification,
+    };
+    var twoFactorLogin = new TwoFactorLogin(twoFactorLoginParams);
+  
+    twoFactorLogin.setup();
+  </script>
+  
+  
+  
+  
+  </main></body></html>
