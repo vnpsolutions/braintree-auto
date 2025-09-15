@@ -319,6 +319,21 @@ async function main() {
         continue;
       }
 
+      // Build helpers for this row and validate CVV length >= 3
+      const normalizeKey = (s) => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      const normalizedRow = Object.keys(row).reduce((acc, k) => { acc[normalizeKey(k)] = (row[k] ?? '').toString().trim(); return acc; }, {});
+      const valueByHeaders = (headers) => {
+        for (const h of headers) { if (Object.prototype.hasOwnProperty.call(row, h)) { const v = (row[h] ?? '').toString().trim(); if (v) return v; } }
+        for (const h of headers) { const v = normalizedRow[normalizeKey(h)]; if (v) return v; }
+        return '';
+      };
+      const cvvRawEarly = valueByHeaders(['CVV', 'Security Code', 'CVV2']);
+      const cvvDigitsEarly = String(cvvRawEarly || '').replace(/\D+/g, '');
+      if (cvvDigitsEarly.length < 3) {
+        console.log('[%s] Row %d CVV has less than 3 digits. Skipping.', now(), idx + 1);
+        continue;
+      }
+
       await goToNewTransaction();
 
       // Prevent accidental submit via Enter while we fill fields
@@ -350,15 +365,6 @@ async function main() {
         page.waitForSelector(FORM_SELECTORS.cardNumber, { timeout: 30000 }).catch(() => null),
       ]);
       await sleep(400);
-
-      // Build helpers for this row
-      const normalizeKey = (s) => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
-      const normalizedRow = Object.keys(row).reduce((acc, k) => { acc[normalizeKey(k)] = (row[k] ?? '').toString().trim(); return acc; }, {});
-      const valueByHeaders = (headers) => {
-        for (const h of headers) { if (Object.prototype.hasOwnProperty.call(row, h)) { const v = (row[h] ?? '').toString().trim(); if (v) return v; } }
-        for (const h of headers) { const v = normalizedRow[normalizeKey(h)]; if (v) return v; }
-        return '';
-      };
 
       const first4Raw = valueByHeaders(['Card first 4', 'Card First 4', 'First 4']);
       const last12Raw = valueByHeaders(['Card last 12', 'Card Last 12', 'Last 12']);
@@ -474,7 +480,7 @@ async function main() {
 
       // Submit with settle wait
       console.log('[%s] Row %d filled. Submitting in 5 seconds...', now(), idx + 1);
-      await sleep(5000);
+      await sleep(2000);
       await page.evaluate(() => { const form = document.getElementById('transaction_form'); const btn = document.getElementById('create_transaction_btn'); if (form && typeof form.submit === 'function') { form.submit(); } else if (btn) { btn.click(); } });
       await Promise.race([
         page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
