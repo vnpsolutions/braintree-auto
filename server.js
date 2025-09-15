@@ -53,6 +53,11 @@ const SELECTORS = {
     'body.transactions_new',
     'h2:has-text("New Transaction")',
     'h2:has-text("Transaction Create")'
+  ],
+  submitPage: [
+    'body.transactions_show',
+    'span.transaction-status',
+    'h2:has-text("Transaction Detail")'
   ]
 };
 
@@ -97,6 +102,38 @@ function buildCardNumber(first4, last12) {
   const f = String(first4 || '').replace(/\D+/g, '').slice(0, 4);
   const l = String(last12 || '').replace(/\D+/g, '').slice(0, 12);
   return `${f}${l}`.trim();
+}
+
+function writeStatusToExcel(filePath, rowIndexZeroBased, statusValue) {
+  // eslint-disable-next-line global-require
+  const xlsx = require('xlsx');
+  const wb = xlsx.readFile(filePath);
+  const sheetName = wb.SheetNames[0];
+  const ws = wb.Sheets[sheetName];
+  const range = xlsx.utils.decode_range(ws['!ref']);
+  const headerRow = range.s.r;
+  let statusCol = null;
+  for (let c = range.s.c; c <= range.e.c; c += 1) {
+    const addr = xlsx.utils.encode_cell({ r: headerRow, c });
+    const cell = ws[addr];
+    const txt = cell ? String(cell.v ?? cell.w ?? '').trim().toLowerCase() : '';
+    if (txt === 'status') { statusCol = c; break; }
+  }
+  if (statusCol === null) {
+    statusCol = range.e.c + 1;
+    const headerAddr = xlsx.utils.encode_cell({ r: headerRow, c: statusCol });
+    ws[headerAddr] = { t: 's', v: 'STATUS' };
+    range.e.c = statusCol;
+    ws['!ref'] = xlsx.utils.encode_range(range);
+  }
+  const targetRow = headerRow + 1 + rowIndexZeroBased;
+  const targetAddr = xlsx.utils.encode_cell({ r: targetRow, c: statusCol });
+  ws[targetAddr] = { t: 's', v: statusValue };
+  if (targetRow > range.e.r) {
+    range.e.r = targetRow;
+    ws['!ref'] = xlsx.utils.encode_range(range);
+  }
+  xlsx.writeFile(wb, filePath);
 }
 
 function now() {
@@ -466,8 +503,69 @@ async function main() {
       }
     }
 
-    console.log('[%s] Form filled. Pausing here for manual review. Close the browser to end.', now());
-    // Keep the browser open for review; do not submit or exit automatically
+    // Submit the transaction after a short delay for stability
+    console.log('[%s] Form filled. Submitting in 5 seconds...', now());
+    await sleep(5000);
+    console.log('[%s] Clicking Create Transaction...', now());
+    // Use form.submit() to avoid any prevented submit listeners
+    await page.evaluate(() => {
+      const form = document.getElementById('transaction_form');
+      const btn = document.getElementById('create_transaction_btn');
+      if (form && typeof form.submit === 'function') {
+        form.submit();
+      } else if (btn) {
+        btn.click();
+      }
+    });
+
+    // Wait for submit page
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
+      page.waitForSelector('body.transactions_show', { timeout: 60000 }).catch(() => null)
+    ]);
+    console.log('[%s] Waiting for submit page selectors...', now());
+    await waitForAnySelector(page, SELECTORS.submitPage, 30000);
+
+    // Extract transaction status
+    let statusText = '';
+    try {
+      statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim());
+    } catch (_) {
+      // Fallback: search any span with class containing transaction-status
+      statusText = await page.evaluate(() => {
+        const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]');
+        return el ? (el.textContent || '').trim() : '';
+      });
+    }
+    console.log('[%s] Transaction status: %s', now(), statusText || 'N/A');
+
+    // Write STATUS back to Excel (first data row)
+    try {
+      writeStatusToExcel(path.join(process.cwd(), 'input_file.xlsx'), 0, statusText || '');
+      console.log('[%s] Wrote STATUS to Excel for row 1.', now());
+    } catch (e) {
+      console.warn('[%s] Failed to write STATUS to Excel: %s', now(), e && e.message ? e.message : String(e));
+    }
+
+    // Save screenshot of submit page
+    const screenshotsDir = path.join(process.cwd(), 'screenshots');
+    try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
+    const submitShot = path.join(screenshotsDir, `submit_${Date.now()}.png`);
+    await page.screenshot({ path: submitShot, fullPage: true });
+    console.log('[%s] Submit page screenshot saved to %s', now(), submitShot);
+
+    // Navigate back to Transactions tab so we can be ready for next loop
+    console.log('[%s] Returning to Transactions tab...', now());
+    await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
+    await page.click(SELECTORS.transactionsLink[0]).catch(async () => {
+      await page.click(SELECTORS.transactionsLink[1]);
+    });
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null),
+      waitForAnySelector(page, SELECTORS.newTransactionLink, 30000).catch(() => null)
+    ]);
+
+    console.log('[%s] Ready for next entry. Pausing for review (no loop yet).', now());
     await new Promise(() => {});
   } catch (err) {
     exitCode = 1;
