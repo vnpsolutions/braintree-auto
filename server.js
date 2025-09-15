@@ -98,6 +98,18 @@ function readFirstRowFromExcel(filePath) {
   return rows[0];
 }
 
+function readAllRowsFromExcel(filePath) {
+  // eslint-disable-next-line global-require
+  const xlsx = require('xlsx');
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Input file not found: ${filePath}`);
+  }
+  const wb = xlsx.readFile(filePath);
+  const sheetName = wb.SheetNames[0];
+  const ws = wb.Sheets[sheetName];
+  return xlsx.utils.sheet_to_json(ws, { defval: '' });
+}
+
 function buildCardNumber(first4, last12) {
   const f = String(first4 || '').replace(/\D+/g, '').slice(0, 4);
   const l = String(last12 || '').replace(/\D+/g, '').slice(0, 12);
@@ -262,311 +274,238 @@ async function main() {
 
     console.log('[%s] Main dashboard confirmed (selectors from main_dashboard_selectors.html).', now());
 
-    // Navigate: click Transactions in top menu
-    console.log('[%s] Clicking Transactions...', now());
-    await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
-    await page.click(SELECTORS.transactionsLink[0]).catch(async () => {
-      await page.click(SELECTORS.transactionsLink[1]);
-    });
-    // Proceed as soon as the New Transaction link is available or a navigation occurs
-    await Promise.race([
-      waitForAnySelector(page, SELECTORS.newTransactionLink, 20000),
-      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => null)
-    ]);
-
-    // Click New Transaction
-    console.log('[%s] Clicking New Transaction...', now());
-    await page.click(SELECTORS.newTransactionLink[0]).catch(async () => {
-      await page.click(SELECTORS.newTransactionLink[1]);
-    });
-    await Promise.race([
-      page.waitForSelector('body.transactions_new', { timeout: 20000 }).catch(() => null),
-      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => null)
-    ]);
-
-    // Wait for New Transaction page based on selectors
-    console.log('[%s] Waiting for New Transaction page to load...', now());
-    try {
-      // Prefer strong body class
-      await page.waitForSelector('body.transactions_new', { timeout: 20000 });
-    } catch (_) {
-      // Fallback to title/header text presence
-      await waitForAnySelector(page, [
-        'h2',
-      ], 20000);
-      await page.waitForFunction(() => {
-        const h2s = Array.from(document.querySelectorAll('h2'));
-        return h2s.some(h => /New Transaction|Transaction Create/i.test((h.textContent || '').trim()));
-      }, { timeout: 20000 });
-    }
-
-    // Prevent accidental submit via Enter while we fill fields
-    await page.evaluate(() => {
+    // Helper to navigate to New Transaction page from any state where the top nav is visible
+    async function goToNewTransaction() {
+      console.log('[%s] Navigating to New Transaction...', now());
+      await waitForAnySelector(page, SELECTORS.transactionsLink, 20000);
+      await page.click(SELECTORS.transactionsLink[0]).catch(async () => { await page.click(SELECTORS.transactionsLink[1]); });
+      await Promise.race([
+        waitForAnySelector(page, SELECTORS.newTransactionLink, 20000),
+        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => null)
+      ]);
+      await page.click(SELECTORS.newTransactionLink[0]).catch(async () => { await page.click(SELECTORS.newTransactionLink[1]); });
+      await Promise.race([
+        page.waitForSelector('body.transactions_new', { timeout: 20000 }).catch(() => null),
+        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => null)
+      ]);
       try {
-        const preventEnter = (e) => {
-          if (e.key === 'Enter' && e.target && e.target.tagName === 'INPUT') {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        };
-        window.addEventListener('keydown', preventEnter, true);
-        const form = document.getElementById('transaction_form');
-        if (form) {
-          form.addEventListener('submit', (e) => { e.preventDefault(); e.stopPropagation(); }, true);
-        }
-      } catch (_) {}
-    });
-
-    // Ensure New Transaction inputs are present before filling
-    try {
-      await page.waitForSelector(FORM_SELECTORS.merchantAccount, { timeout: 30000 });
-    } catch (e) {
-      console.warn('[%s] Merchant Account input not immediately available, adding brief delay...', now());
-      await sleep(1500);
-      await page.waitForSelector(FORM_SELECTORS.merchantAccount, { timeout: 30000 });
+        await page.waitForSelector('body.transactions_new', { timeout: 20000 });
+      } catch (_) {
+        await waitForAnySelector(page, ['h2'], 20000);
+        await page.waitForFunction(() => {
+          const h2s = Array.from(document.querySelectorAll('h2'));
+          return h2s.some(h => /New Transaction|Transaction Create/i.test((h.textContent || '').trim()));
+        }, { timeout: 20000 });
+      }
     }
-    await Promise.all([
-      page.waitForSelector(FORM_SELECTORS.amount, { timeout: 30000 }).catch(() => null),
-      page.waitForSelector(FORM_SELECTORS.orderId, { timeout: 30000 }).catch(() => null),
-      page.waitForSelector(FORM_SELECTORS.cardNumber, { timeout: 30000 }).catch(() => null),
-    ]);
-    await sleep(400);
 
-    // Read first row from Excel and fill the form
-    console.log('[%s] Reading first row from input_file.xlsx ...', now());
-    let row;
+    // Read all rows and iterate
+    const inputPath = path.join(process.cwd(), 'input_file.xlsx');
+    let rows;
     try {
-      row = readFirstRowFromExcel(path.join(process.cwd(), 'input_file.xlsx'));
+      rows = readAllRowsFromExcel(inputPath);
     } catch (e) {
       console.error('[%s] Excel read error: %s', now(), e.message || e);
       throw e;
     }
 
-    const normalizeKey = (s) => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
-    const normalizedRow = Object.keys(row).reduce((acc, k) => {
-      acc[normalizeKey(k)] = (row[k] ?? '').toString().trim();
-      return acc;
-    }, {});
-    const valueByHeaders = (headers) => {
-      for (const h of headers) {
-        if (Object.prototype.hasOwnProperty.call(row, h)) {
-          const v = (row[h] ?? '').toString().trim();
-          if (v) return v;
+    for (let idx = 0; idx < rows.length; idx += 1) {
+      const row = rows[idx];
+
+      // Skip if STATUS already present/non-empty
+      const statusCell = (row.STATUS ?? row.Status ?? row.status ?? '').toString().trim();
+      if (statusCell) {
+        console.log('[%s] Row %d already has STATUS="%s". Skipping.', now(), idx + 1, statusCell);
+        continue;
+      }
+
+      await goToNewTransaction();
+
+      // Prevent accidental submit via Enter while we fill fields
+      await page.evaluate(() => {
+        try {
+          const preventEnter = (e) => {
+            if (e.key === 'Enter' && e.target && e.target.tagName === 'INPUT') {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          };
+          window.addEventListener('keydown', preventEnter, true);
+          const form = document.getElementById('transaction_form');
+          if (form) { form.addEventListener('submit', (e) => { e.preventDefault(); e.stopPropagation(); }, true); }
+        } catch (_) {}
+      });
+
+      // Ensure critical inputs
+      try {
+        await page.waitForSelector(FORM_SELECTORS.merchantAccount, { timeout: 30000 });
+      } catch (e) {
+        console.warn('[%s] Merchant Account input not immediately available, adding brief delay...', now());
+        await sleep(1500);
+        await page.waitForSelector(FORM_SELECTORS.merchantAccount, { timeout: 30000 });
+      }
+      await Promise.all([
+        page.waitForSelector(FORM_SELECTORS.amount, { timeout: 30000 }).catch(() => null),
+        page.waitForSelector(FORM_SELECTORS.orderId, { timeout: 30000 }).catch(() => null),
+        page.waitForSelector(FORM_SELECTORS.cardNumber, { timeout: 30000 }).catch(() => null),
+      ]);
+      await sleep(400);
+
+      // Build helpers for this row
+      const normalizeKey = (s) => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      const normalizedRow = Object.keys(row).reduce((acc, k) => { acc[normalizeKey(k)] = (row[k] ?? '').toString().trim(); return acc; }, {});
+      const valueByHeaders = (headers) => {
+        for (const h of headers) { if (Object.prototype.hasOwnProperty.call(row, h)) { const v = (row[h] ?? '').toString().trim(); if (v) return v; } }
+        for (const h of headers) { const v = normalizedRow[normalizeKey(h)]; if (v) return v; }
+        return '';
+      };
+
+      const first4Raw = valueByHeaders(['Card first 4', 'Card First 4', 'First 4']);
+      const last12Raw = valueByHeaders(['Card last 12', 'Card Last 12', 'Last 12']);
+      const first4Digits = String(first4Raw).replace(/\D+/g, '').slice(0, 4);
+      const last12Digits = String(last12Raw).replace(/\D+/g, '').slice(0, 12);
+
+      const formValues = {
+        merchantAccount: valueByHeaders(['MAIDS', 'Merchant Account', 'Merchant Account ID']),
+        amount: valueByHeaders(['Amount']),
+        orderId: valueByHeaders(['Reservation ID', 'Order ID']),
+        customerFirstName: valueByHeaders(['Hotel Name', 'First Name']),
+        cardholderName: 'BOOKING.COM',
+        cardNumber: first4Digits && last12Digits ? `${first4Digits}${last12Digits}` : (first4Digits || last12Digits || ''),
+        expirationDate: valueByHeaders(['Expiry', 'Expiration', 'Expiration Date (MM/YYYY)', 'Expiration Date', 'Exp Date']).replace(/\s+/g, ''),
+        cvv: valueByHeaders(['CVV', 'Security Code', 'CVV2']),
+        billingPostalCode: '10118',
+        billingCompany: '',
+        billingCountryName: 'United States of America'
+      };
+
+      console.log('[%s] Filling New Transaction form for row %d...', now(), idx + 1);
+      // Merchant Account
+      if (formValues.merchantAccount) {
+        await page.focus(FORM_SELECTORS.merchantAccount);
+        await page.click(FORM_SELECTORS.merchantAccount, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.merchantAccount, formValues.merchantAccount, { delay: 25 });
+        await sleep(250);
+        await page.keyboard.press('Tab').catch(() => {});
+      }
+      // Amount
+      if (formValues.amount) {
+        await page.focus(FORM_SELECTORS.amount);
+        await page.click(FORM_SELECTORS.amount, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.amount, formValues.amount, { delay: 10 });
+      }
+      // Order ID
+      if (formValues.orderId) {
+        await page.focus(FORM_SELECTORS.orderId);
+        await page.click(FORM_SELECTORS.orderId, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.orderId, formValues.orderId, { delay: 10 });
+      }
+      // Customer First Name
+      if (formValues.customerFirstName) {
+        await page.focus(FORM_SELECTORS.customerFirstName);
+        await page.click(FORM_SELECTORS.customerFirstName, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.customerFirstName, formValues.customerFirstName, { delay: 10 });
+      }
+      // Cardholder Name
+      await page.focus(FORM_SELECTORS.cardholderName);
+      await page.click(FORM_SELECTORS.cardholderName, { clickCount: 3 });
+      await page.type(FORM_SELECTORS.cardholderName, formValues.cardholderName, { delay: 10 });
+      // Card Number
+      if (formValues.cardNumber) {
+        await page.focus(FORM_SELECTORS.cardNumber);
+        await page.click(FORM_SELECTORS.cardNumber, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.cardNumber, formValues.cardNumber, { delay: 10 });
+        try {
+          const typed = await page.$eval(FORM_SELECTORS.cardNumber, (el) => (el.value || ''));
+          const typedDigits = String(typed).replace(/\D+/g, '');
+          const expectedDigits = `${first4Digits}${last12Digits}`;
+          if (expectedDigits && typedDigits.length < expectedDigits.length) {
+            const remaining = expectedDigits.slice(typedDigits.length);
+            await page.type(FORM_SELECTORS.cardNumber, `${remaining}`, { delay: 10 });
+          }
+        } catch (_) {}
+      }
+      // Expiration Date
+      if (formValues.expirationDate) {
+        await page.focus(FORM_SELECTORS.expirationDate);
+        await page.click(FORM_SELECTORS.expirationDate, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.expirationDate, formValues.expirationDate, { delay: 10 });
+      }
+      // CVV
+      if (formValues.cvv) {
+        await page.focus(FORM_SELECTORS.cvv);
+        await page.click(FORM_SELECTORS.cvv, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.cvv, formValues.cvv, { delay: 10 });
+      }
+      // Postal Code
+      await page.focus(FORM_SELECTORS.billingPostalCode);
+      await page.click(FORM_SELECTORS.billingPostalCode, { clickCount: 3 });
+      await page.type(FORM_SELECTORS.billingPostalCode, formValues.billingPostalCode, { delay: 10 });
+      // Billing First Name
+      try {
+        await page.focus(FORM_SELECTORS.billingFirstName);
+        await page.click(FORM_SELECTORS.billingFirstName, { clickCount: 3 });
+        await page.type(FORM_SELECTORS.billingFirstName, 'Booking.com', { delay: 10 });
+      } catch (_) {}
+      // Clear Billing Company
+      try {
+        await page.$eval(FORM_SELECTORS.billingCompany, (el) => {
+          el.value = '';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      } catch (_) {}
+      // Country Name
+      if (formValues.billingCountryName) {
+        await page.select(FORM_SELECTORS.billingCountryName, formValues.billingCountryName).catch(async () => {
+          await page.evaluate((sel, val) => { const el = document.querySelector(sel); if (el) { el.value = val; el.dispatchEvent(new Event('change', { bubbles: true })); } }, FORM_SELECTORS.billingCountryName, formValues.billingCountryName);
+        });
+      }
+      // Skip Premium Fraud Checking
+      const skipChecked = await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.checked).catch(() => false);
+      if (!skipChecked) {
+        try { await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.scrollIntoView({ block: 'center' })); } catch (_) {}
+        await page.click(FORM_SELECTORS.skipPremiumFraudCheckbox).catch(() => {});
+        const stillUnchecked = await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.checked).catch(() => false);
+        if (!stillUnchecked) {
+          await page.evaluate((sel) => { const el = document.querySelector(sel); if (el) { el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); } }, FORM_SELECTORS.skipPremiumFraudCheckbox);
         }
       }
-      for (const h of headers) {
-        const v = normalizedRow[normalizeKey(h)];
-        if (v) return v;
+
+      // Submit with settle wait
+      console.log('[%s] Row %d filled. Submitting in 5 seconds...', now(), idx + 1);
+      await sleep(5000);
+      await page.evaluate(() => { const form = document.getElementById('transaction_form'); const btn = document.getElementById('create_transaction_btn'); if (form && typeof form.submit === 'function') { form.submit(); } else if (btn) { btn.click(); } });
+      await Promise.race([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
+        page.waitForSelector('body.transactions_show', { timeout: 60000 }).catch(() => null)
+      ]);
+      await waitForAnySelector(page, SELECTORS.submitPage, 30000);
+
+      // Extract and write status
+      let statusText = '';
+      try { statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim()); } catch (_) {
+        statusText = await page.evaluate(() => { const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]'); return el ? (el.textContent || '').trim() : ''; });
       }
-      return '';
-    };
+      console.log('[%s] Row %d status: %s', now(), idx + 1, statusText || 'N/A');
+      try { writeStatusToExcel(inputPath, idx, statusText || ''); console.log('[%s] STATUS written to Excel for row %d.', now(), idx + 1); } catch (e) { console.warn('[%s] Failed to write STATUS for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e)); }
 
-    const first4Raw = valueByHeaders(['Card first 4', 'Card First 4', 'First 4']);
-    const last12Raw = valueByHeaders(['Card last 12', 'Card Last 12', 'Last 12']);
-    const first4Digits = String(first4Raw).replace(/\D+/g, '').slice(0, 4);
-    const last12Digits = String(last12Raw).replace(/\D+/g, '').slice(0, 12);
+      // Screenshot
+      const screenshotsDir = path.join(process.cwd(), 'screenshots');
+      try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
+      const submitShot = path.join(screenshotsDir, `submit_row${idx + 1}_${Date.now()}.png`);
+      await page.screenshot({ path: submitShot, fullPage: true });
 
-    const formValues = {
-      merchantAccount: valueByHeaders(['MAIDS', 'Merchant Account', 'Merchant Account ID']),
-      amount: valueByHeaders(['Amount']),
-      orderId: valueByHeaders(['Reservation ID', 'Order ID']),
-      customerFirstName: valueByHeaders(['Hotel Name', 'First Name']),
-      cardholderName: 'BOOKING.COM',
-      cardNumber: first4Digits && last12Digits ? `${first4Digits}${last12Digits}` : (first4Digits || last12Digits || ''),
-      expirationDate: valueByHeaders(['Expiry', 'Expiration', 'Expiration Date (MM/YYYY)', 'Expiration Date', 'Exp Date']).replace(/\s+/g, ''),
-      cvv: valueByHeaders(['CVV', 'Security Code', 'CVV2']),
-      billingPostalCode: '10118',
-      billingCompany: '',
-      billingCountryName: 'United States of America'
-    };
-
-    console.log('[%s] Filling New Transaction form...', now());
-    // Merchant Account (singleplete text input)
-    if (formValues.merchantAccount) {
-      await page.focus(FORM_SELECTORS.merchantAccount);
-      await page.click(FORM_SELECTORS.merchantAccount, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.merchantAccount, formValues.merchantAccount, { delay: 25 });
-      // Let autocomplete settle, then blur without submitting
-      await sleep(250);
-      await page.keyboard.press('Tab').catch(() => {});
+      // Back to Transactions for next iteration
+      await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
+      await page.click(SELECTORS.transactionsLink[0]).catch(async () => { await page.click(SELECTORS.transactionsLink[1]); });
+      await Promise.race([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null),
+        waitForAnySelector(page, SELECTORS.newTransactionLink, 30000).catch(() => null)
+      ]);
     }
 
-    // Amount
-    if (formValues.amount) {
-      await page.focus(FORM_SELECTORS.amount);
-      await page.click(FORM_SELECTORS.amount, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.amount, formValues.amount, { delay: 10 });
-    }
-
-    // Order ID
-    if (formValues.orderId) {
-      await page.focus(FORM_SELECTORS.orderId);
-      await page.click(FORM_SELECTORS.orderId, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.orderId, formValues.orderId, { delay: 10 });
-    }
-
-    // Customer First Name
-    if (formValues.customerFirstName) {
-      await page.focus(FORM_SELECTORS.customerFirstName);
-      await page.click(FORM_SELECTORS.customerFirstName, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.customerFirstName, formValues.customerFirstName, { delay: 10 });
-    }
-
-    // Cardholder Name (fixed)
-    await page.focus(FORM_SELECTORS.cardholderName);
-    await page.click(FORM_SELECTORS.cardholderName, { clickCount: 3 });
-    await page.type(FORM_SELECTORS.cardholderName, formValues.cardholderName, { delay: 10 });
-
-    // Credit Card Number (ensure both parts typed)
-    if (formValues.cardNumber) {
-      await page.focus(FORM_SELECTORS.cardNumber);
-      await page.click(FORM_SELECTORS.cardNumber, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.cardNumber, formValues.cardNumber, { delay: 10 });
-      // Verify and complete if only partially typed
-      try {
-        const typed = await page.$eval(FORM_SELECTORS.cardNumber, (el) => (el.value || ''));
-        const typedDigits = String(typed).replace(/\D+/g, '');
-        const expectedDigits = `${first4Digits}${last12Digits}`;
-        if (expectedDigits && typedDigits.length < expectedDigits.length) {
-          const remaining = expectedDigits.slice(typedDigits.length);
-          await page.type(FORM_SELECTORS.cardNumber, `${remaining}`, { delay: 10 });
-        }
-      } catch (_) {}
-    }
-
-    // Expiration Date
-    if (formValues.expirationDate) {
-      await page.focus(FORM_SELECTORS.expirationDate);
-      await page.click(FORM_SELECTORS.expirationDate, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.expirationDate, formValues.expirationDate, { delay: 10 });
-    }
-
-    // CVV
-    if (formValues.cvv) {
-      await page.focus(FORM_SELECTORS.cvv);
-      await page.click(FORM_SELECTORS.cvv, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.cvv, formValues.cvv, { delay: 10 });
-    }
-
-    // Billing Postal Code (fixed)
-    await page.focus(FORM_SELECTORS.billingPostalCode);
-    await page.click(FORM_SELECTORS.billingPostalCode, { clickCount: 3 });
-    await page.type(FORM_SELECTORS.billingPostalCode, formValues.billingPostalCode, { delay: 10 });
-
-    // Billing First Name (fixed "Booking.com")
-    try {
-      await page.focus(FORM_SELECTORS.billingFirstName);
-      await page.click(FORM_SELECTORS.billingFirstName, { clickCount: 3 });
-      await page.type(FORM_SELECTORS.billingFirstName, 'Booking.com', { delay: 10 });
-    } catch (_) {}
-
-    // Clear Billing Company
-    try {
-      await page.$eval(FORM_SELECTORS.billingCompany, (el) => {
-        el.value = '';
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      });
-    } catch (_) {}
-
-    // Country Name select
-    if (formValues.billingCountryName) {
-      await page.select(FORM_SELECTORS.billingCountryName, formValues.billingCountryName).catch(async () => {
-        // Fallback: set value via evaluate for custom select wrappers
-        await page.evaluate((sel, val) => {
-          const el = document.querySelector(sel);
-          if (el) {
-            el.value = val;
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-        }, FORM_SELECTORS.billingCountryName, formValues.billingCountryName);
-      });
-    }
-
-    // Skip Premium Fraud Checking
-    const skipChecked = await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.checked).catch(() => false);
-    if (!skipChecked) {
-      try {
-        await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.scrollIntoView({ block: 'center' }));
-      } catch (_) {}
-      await page.click(FORM_SELECTORS.skipPremiumFraudCheckbox).catch(() => {});
-      // Force-set checked if needed
-      const stillUnchecked = await page.$eval(FORM_SELECTORS.skipPremiumFraudCheckbox, (el) => el.checked).catch(() => false);
-      if (!stillUnchecked) {
-        await page.evaluate((sel) => {
-          const el = document.querySelector(sel);
-          if (el) {
-            el.checked = true;
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-        }, FORM_SELECTORS.skipPremiumFraudCheckbox);
-      }
-    }
-
-    // Submit the transaction after a short delay for stability
-    console.log('[%s] Form filled. Submitting in 5 seconds...', now());
-    await sleep(5000);
-    console.log('[%s] Clicking Create Transaction...', now());
-    // Use form.submit() to avoid any prevented submit listeners
-    await page.evaluate(() => {
-      const form = document.getElementById('transaction_form');
-      const btn = document.getElementById('create_transaction_btn');
-      if (form && typeof form.submit === 'function') {
-        form.submit();
-      } else if (btn) {
-        btn.click();
-      }
-    });
-
-    // Wait for submit page
-    await Promise.race([
-      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
-      page.waitForSelector('body.transactions_show', { timeout: 60000 }).catch(() => null)
-    ]);
-    console.log('[%s] Waiting for submit page selectors...', now());
-    await waitForAnySelector(page, SELECTORS.submitPage, 30000);
-
-    // Extract transaction status
-    let statusText = '';
-    try {
-      statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim());
-    } catch (_) {
-      // Fallback: search any span with class containing transaction-status
-      statusText = await page.evaluate(() => {
-        const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]');
-        return el ? (el.textContent || '').trim() : '';
-      });
-    }
-    console.log('[%s] Transaction status: %s', now(), statusText || 'N/A');
-
-    // Write STATUS back to Excel (first data row)
-    try {
-      writeStatusToExcel(path.join(process.cwd(), 'input_file.xlsx'), 0, statusText || '');
-      console.log('[%s] Wrote STATUS to Excel for row 1.', now());
-    } catch (e) {
-      console.warn('[%s] Failed to write STATUS to Excel: %s', now(), e && e.message ? e.message : String(e));
-    }
-
-    // Save screenshot of submit page
-    const screenshotsDir = path.join(process.cwd(), 'screenshots');
-    try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
-    const submitShot = path.join(screenshotsDir, `submit_${Date.now()}.png`);
-    await page.screenshot({ path: submitShot, fullPage: true });
-    console.log('[%s] Submit page screenshot saved to %s', now(), submitShot);
-
-    // Navigate back to Transactions tab so we can be ready for next loop
-    console.log('[%s] Returning to Transactions tab...', now());
-    await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
-    await page.click(SELECTORS.transactionsLink[0]).catch(async () => {
-      await page.click(SELECTORS.transactionsLink[1]);
-    });
-    await Promise.race([
-      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null),
-      waitForAnySelector(page, SELECTORS.newTransactionLink, 30000).catch(() => null)
-    ]);
-
-    console.log('[%s] Ready for next entry. Pausing for review (no loop yet).', now());
-    await new Promise(() => {});
+    console.log('[%s] All rows processed successfully. Closing browser...', now());
   } catch (err) {
     exitCode = 1;
     console.error('[%s] Error: %s', now(), err && err.stack ? err.stack : String(err));
