@@ -23,6 +23,12 @@ const LOGIN_PAGE_LOAD_TIMEOUT_MS = Number(process.env.LOGIN_PAGE_LOAD_TIMEOUT_MS
 const POST_LOGIN_WAIT_TIMEOUT_MS = Number(process.env.POST_LOGIN_WAIT_TIMEOUT_MS || 10 * 60 * 1000); // 10 minutes
 const OTP_WAIT_TIMEOUT_MS = Number(process.env.OTP_WAIT_TIMEOUT_MS || 10 * 60 * 1000); // 10 minutes
 
+// Brand selection via CLI: --agoda or --booking (default booking)
+const BRAND = process.argv.includes('--agoda') ? 'agoda' : 'booking';
+const hasFlag = (flag) => process.argv.includes(flag);
+// Review mode: explicit --review, or default for agoda unless --no-review is passed
+const REVIEW_MODE = hasFlag('--review') || (BRAND === 'agoda' && !hasFlag('--no-review'));
+
 // Stable selectors derived from saved HTML templates in html_templates_for_selectors/
 const SELECTORS = {
   login: [
@@ -73,6 +79,8 @@ const FORM_SELECTORS = {
   billingPostalCode: '#transaction_billing_postal_code',
   billingCompany: '#transaction_billing_company',
   billingFirstName: '#transaction_billing_first_name',
+  billingStreet: '#transaction_billing_street_address',
+  billingRegion: '#transaction_billing_region',
   billingCountryName: '#transaction_billing_country_name',
   skipPremiumFraudCheckbox: '#transaction_options_skip_advanced_fraud_checking'
 };
@@ -376,11 +384,11 @@ async function main() {
         amount: valueByHeaders(['Amount']),
         orderId: valueByHeaders(['Reservation ID', 'Order ID']),
         customerFirstName: valueByHeaders(['Hotel Name', 'First Name']),
-        cardholderName: 'BOOKING.COM',
+        cardholderName: BRAND === 'agoda' ? 'Agoda Ltd.' : 'BOOKING.COM',
         cardNumber: first4Digits && last12Digits ? `${first4Digits}${last12Digits}` : (first4Digits || last12Digits || ''),
         expirationDate: valueByHeaders(['Expiry', 'Expiration', 'Expiration Date (MM/YYYY)', 'Expiration Date', 'Exp Date']).replace(/\s+/g, ''),
         cvv: valueByHeaders(['CVV', 'Security Code', 'CVV2']),
-        billingPostalCode: '10118',
+        billingPostalCode: BRAND === 'agoda' ? '80525' : '10118',
         billingCompany: '',
         billingCountryName: 'United States of America'
       };
@@ -447,12 +455,26 @@ async function main() {
       await page.focus(FORM_SELECTORS.billingPostalCode);
       await page.click(FORM_SELECTORS.billingPostalCode, { clickCount: 3 });
       await page.type(FORM_SELECTORS.billingPostalCode, formValues.billingPostalCode, { delay: 10 });
-      // Billing First Name
+      // Billing First Name (brand-specific)
       try {
         await page.focus(FORM_SELECTORS.billingFirstName);
         await page.click(FORM_SELECTORS.billingFirstName, { clickCount: 3 });
-        await page.type(FORM_SELECTORS.billingFirstName, 'Booking.com', { delay: 10 });
+        await page.type(FORM_SELECTORS.billingFirstName, BRAND === 'agoda' ? 'Agoda Company Pte Ltd.' : 'Booking.com', { delay: 10 });
       } catch (_) {}
+
+      // Agoda-only fields: Street Address and Region
+      if (BRAND === 'agoda') {
+        try {
+          await page.focus(FORM_SELECTORS.billingStreet);
+          await page.click(FORM_SELECTORS.billingStreet, { clickCount: 3 });
+          await page.type(FORM_SELECTORS.billingStreet, '155 E. Boardwalk #490', { delay: 10 });
+        } catch (_) {}
+        try {
+          await page.focus(FORM_SELECTORS.billingRegion);
+          await page.click(FORM_SELECTORS.billingRegion, { clickCount: 3 });
+          await page.type(FORM_SELECTORS.billingRegion, 'Fort Collins, CO', { delay: 10 });
+        } catch (_) {}
+      }
       // Clear Billing Company
       try {
         await page.$eval(FORM_SELECTORS.billingCompany, (el) => {
@@ -478,37 +500,44 @@ async function main() {
         }
       }
 
-      // Submit with settle wait
-      console.log('[%s] Row %d filled. Submitting in 5 seconds...', now(), idx + 1);
-      await sleep(2000);
-      await page.evaluate(() => { const form = document.getElementById('transaction_form'); const btn = document.getElementById('create_transaction_btn'); if (form && typeof form.submit === 'function') { form.submit(); } else if (btn) { btn.click(); } });
-      await Promise.race([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
-        page.waitForSelector('body.transactions_show', { timeout: 60000 }).catch(() => null)
-      ]);
-      await waitForAnySelector(page, SELECTORS.submitPage, 30000);
-
-      // Extract and write status
-      let statusText = '';
-      try { statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim()); } catch (_) {
-        statusText = await page.evaluate(() => { const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]'); return el ? (el.textContent || '').trim() : ''; });
+      // Submit with settle wait (disabled in REVIEW_MODE)
+      if (REVIEW_MODE) {
+        console.log('[%s] REVIEW MODE enabled. Pausing after fill for manual review on row %d. Press Ctrl+C to exit.', now(), idx + 1);
+        await new Promise(() => {});
+      } else {
+        console.log('[%s] Row %d filled. Submitting in 2 seconds...', now(), idx + 1);
+        await sleep(2000);
+        await page.evaluate(() => { const form = document.getElementById('transaction_form'); const btn = document.getElementById('create_transaction_btn'); if (form && typeof form.submit === 'function') { form.submit(); } else if (btn) { btn.click(); } });
+        await Promise.race([
+          page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null),
+          page.waitForSelector('body.transactions_show', { timeout: 60000 }).catch(() => null)
+        ]);
+        await waitForAnySelector(page, SELECTORS.submitPage, 30000);
       }
-      console.log('[%s] Row %d status: %s', now(), idx + 1, statusText || 'N/A');
-      try { writeStatusToExcel(inputPath, idx, statusText || ''); console.log('[%s] STATUS written to Excel for row %d.', now(), idx + 1); } catch (e) { console.warn('[%s] Failed to write STATUS for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e)); }
 
-      // Screenshot
-      const screenshotsDir = path.join(process.cwd(), 'screenshots');
-      try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
-      const submitShot = path.join(screenshotsDir, `submit_row${idx + 1}_${Date.now()}.png`);
-      await page.screenshot({ path: submitShot, fullPage: true });
+      if (!REVIEW_MODE) {
+        // Extract and write status
+        let statusText = '';
+        try { statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim()); } catch (_) {
+          statusText = await page.evaluate(() => { const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]'); return el ? (el.textContent || '').trim() : ''; });
+        }
+        console.log('[%s] Row %d status: %s', now(), idx + 1, statusText || 'N/A');
+        try { writeStatusToExcel(inputPath, idx, statusText || ''); console.log('[%s] STATUS written to Excel for row %d.', now(), idx + 1); } catch (e) { console.warn('[%s] Failed to write STATUS for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e)); }
 
-      // Back to Transactions for next iteration
-      await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
-      await page.click(SELECTORS.transactionsLink[0]).catch(async () => { await page.click(SELECTORS.transactionsLink[1]); });
-      await Promise.race([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null),
-        waitForAnySelector(page, SELECTORS.newTransactionLink, 30000).catch(() => null)
-      ]);
+        // Screenshot
+        const screenshotsDir = path.join(process.cwd(), 'screenshots');
+        try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
+        const submitShot = path.join(screenshotsDir, `submit_row${idx + 1}_${Date.now()}.png`);
+        await page.screenshot({ path: submitShot, fullPage: true });
+
+        // Back to Transactions for next iteration
+        await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
+        await page.click(SELECTORS.transactionsLink[0]).catch(async () => { await page.click(SELECTORS.transactionsLink[1]); });
+        await Promise.race([
+          page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => null),
+          waitForAnySelector(page, SELECTORS.newTransactionLink, 30000).catch(() => null)
+        ]);
+      }
     }
 
     console.log('[%s] All rows processed successfully. Closing browser...', now());
