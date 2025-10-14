@@ -28,6 +28,8 @@ const BRAND = process.argv.includes('--agoda') ? 'agoda' : 'booking';
 const hasFlag = (flag) => process.argv.includes(flag);
 // Review mode: explicit --review, or default for agoda unless --no-review is passed
 const REVIEW_MODE = hasFlag('--review') || (BRAND === 'agoda' && !hasFlag('--no-review'));
+// Status page wait timeout (longer for agoda)
+const STATUS_WAIT_TIMEOUT_MS = Number(process.env.STATUS_WAIT_TIMEOUT_MS || (BRAND === 'agoda' ? 120000 : 60000));
 
 // Stable selectors derived from saved HTML templates in html_templates_for_selectors/
 const SELECTORS = {
@@ -162,6 +164,29 @@ function now() {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForStatusText(page, timeoutMs) {
+  const start = Date.now();
+  let lastSeen = '';
+  /* Poll until a non-empty status text appears or timeout */
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const text = await page.evaluate(() => {
+        const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]');
+        return el ? (el.textContent || '').trim() : '';
+      });
+      if (text) return text;
+      lastSeen = text;
+    } catch (e) {
+      // ignore transient errors during navigation/paint
+    }
+    if (Date.now() - start > timeoutMs) {
+      throw new Error(`Timed out waiting for transaction status after ${timeoutMs}ms (last seen: "${lastSeen}")`);
+    }
+    await sleep(1000);
+  }
 }
 
 async function importPuppeteer() {
@@ -516,10 +541,17 @@ async function main() {
       }
 
       if (!REVIEW_MODE) {
-        // Extract and write status
+        // Ensure submit page is fully ready and capture status robustly
+        try {
+          await waitForAnySelector(page, SELECTORS.submitPage, STATUS_WAIT_TIMEOUT_MS);
+        } catch (_) {}
         let statusText = '';
-        try { statusText = await page.$eval('span.transaction-status', (el) => (el.textContent || '').trim()); } catch (_) {
-          statusText = await page.evaluate(() => { const el = document.querySelector('span.transaction-status, span[class*="transaction-status"]'); return el ? (el.textContent || '').trim() : ''; });
+        try {
+          statusText = await waitForStatusText(page, STATUS_WAIT_TIMEOUT_MS);
+        } catch (e) {
+          console.warn('[%s] Status text not ready within timeout. Retrying once...', now());
+          await sleep(2000);
+          statusText = await waitForStatusText(page, STATUS_WAIT_TIMEOUT_MS).catch(() => '');
         }
         console.log('[%s] Row %d status: %s', now(), idx + 1, statusText || 'N/A');
         try { writeStatusToExcel(inputPath, idx, statusText || ''); console.log('[%s] STATUS written to Excel for row %d.', now(), idx + 1); } catch (e) { console.warn('[%s] Failed to write STATUS for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e)); }
