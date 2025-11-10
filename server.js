@@ -247,6 +247,7 @@ async function main() {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     args: [
       '--disable-dev-shm-usage',
       '--no-sandbox',
