@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Braintree Automation</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Braintree Automation</h1>
+      <form id="start-form">
+        <div class="form-row">
+          <label for="inputFile">Input File (Excel .xlsx)</label>
+          <input type="file" id="inputFile" name="inputFile" accept=".xlsx" required>
+        </div>
+        <div class="form-row">
+          <label>Brand</label>
+          <div class="inline">
+            <label><input type="radio" name="brand" value="booking" checked> Booking</label>
+            <label><input type="radio" name="brand" value="agoda"> Agoda</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Mode</label>
+          <div class="inline">
+            <label><input type="radio" name="review" value="review" checked> Review</label>
+            <label><input type="radio" name="review" value="no-review"> No Review</label>
+          </div>
+        </div>
+        <button type="submit" id="startBtn">Start</button>
+      </form>
+      <div id="status" class="status"></div>
+      <p class="hint">Keep this page open. The Chromium window will guide you through login. Watch the terminal for logs.</p>
+    </div>
+    <script src="script.js"></script>
+  </body>
+  </html>
+
+

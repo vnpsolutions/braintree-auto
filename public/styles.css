@@ -1,0 +1,17 @@
+:root{--bg:#0f172a;--panel:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--accent2:#3b82f6;}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",Roboto,Ubuntu,\"Helvetica Neue\",\"Noto Sans\",sans-serif;line-height:1.4}
+.container{max-width:720px;margin:48px auto;padding:24px;border-radius:12px;background:rgba(17,24,39,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h1{margin:0 0 24px 0;font-size:28px;letter-spacing:.3px}
+.form-row{margin-bottom:18px}
+label{display:block;margin-bottom:8px;color:#cbd5e1}
+input[type=file],select{width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:#0b1220;color:var(--text)}
+.inline{display:flex;gap:16px}
+.inline input{margin-right:6px}
+button#startBtn{margin-top:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;color:#0b1220;font-weight:700;padding:12px 18px;border-radius:10px;cursor:pointer;transition:transform .06s ease,opacity .2s ease}
+button#startBtn:hover{transform:translateY(-1px);opacity:.95}
+.status{margin-top:16px;min-height:24px;color:var(--muted)}
+.hint{margin-top:12px;color:var(--muted);font-size:14px}
+
+
