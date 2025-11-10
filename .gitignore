@@ -9,3 +9,9 @@ build/
 coverage/
 node_modules/
 
+
+node_modules/
+dist/
+uploads/
+.electron-cache/
+.electron-builder-cache/
