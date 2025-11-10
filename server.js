@@ -557,10 +557,10 @@ async function main() {
         try { writeStatusToExcel(inputPath, idx, statusText || ''); console.log('[%s] STATUS written to Excel for row %d.', now(), idx + 1); } catch (e) { console.warn('[%s] Failed to write STATUS for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e)); }
 
         // Screenshot
-        const screenshotsDir = path.join(process.cwd(), 'screenshots');
-        try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
-        const submitShot = path.join(screenshotsDir, `submit_row${idx + 1}_${Date.now()}.png`);
-        await page.screenshot({ path: submitShot, fullPage: true });
+        // const screenshotsDir = path.join(process.cwd(), 'screenshots');
+        // try { fs.mkdirSync(screenshotsDir, { recursive: true }); } catch (_) {}
+        // const submitShot = path.join(screenshotsDir, `submit_row${idx + 1}_${Date.now()}.png`);
+        // await page.screenshot({ path: submitShot, fullPage: true });
 
         // Back to Transactions for next iteration
         await waitForAnySelector(page, SELECTORS.transactionsLink, 15000);
