@@ -28,9 +28,13 @@
             <label><input type="radio" name="review" value="no-review"> No Review</label>
           </div>
         </div>
-        <button type="submit" id="startBtn">Start</button>
+        <div class="buttons">
+          <button type="submit" id="startBtn">Start</button>
+          <a id="downloadBtn" class="btn-secondary" href="/download" target="_blank" rel="noopener">Download current file</a>
+        </div>
       </form>
       <div id="status" class="status"></div>
+      <pre id="log" class="log" aria-live="polite"></pre>
       <p class="hint">Keep this page open. The Chromium window will guide you through login. Watch the terminal for logs.</p>
     </div>
     <script src="script.js"></script>

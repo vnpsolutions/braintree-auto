@@ -30,6 +30,10 @@ const hasFlag = (flag) => process.argv.includes(flag);
 const REVIEW_MODE = hasFlag('--review') || (BRAND === 'agoda' && !hasFlag('--no-review'));
 // Status page wait timeout (longer for agoda)
 const STATUS_WAIT_TIMEOUT_MS = Number(process.env.STATUS_WAIT_TIMEOUT_MS || (BRAND === 'agoda' ? 120000 : 60000));
+// Input Excel file path (can be injected by UI runner); fallback to ./input_file.xlsx
+const INPUT_XLSX = (process.env.INPUT_XLSX && fs.existsSync(process.env.INPUT_XLSX))
+  ? process.env.INPUT_XLSX
+  : path.join(process.cwd(), 'input_file.xlsx');
 
 // Stable selectors derived from saved HTML templates in html_templates_for_selectors/
 const SELECTORS = {
@@ -333,7 +337,7 @@ async function main() {
     }
 
     // Read all rows and iterate
-    const inputPath = path.join(process.cwd(), 'input_file.xlsx');
+    const inputPath = INPUT_XLSX;
     let rows;
     try {
       rows = readAllRowsFromExcel(inputPath);
