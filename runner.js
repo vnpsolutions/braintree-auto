@@ -67,7 +67,7 @@ app.post('/start', upload.single('inputFile'), (req, res) => {
     if (current.child && !current.child.killed) {
       return res.status(409).json({ ok: false, error: 'A run is already in progress' });
     }
-    const brand = (req.body.brand || 'booking').toLowerCase(); // 'booking' | 'agoda'
+    const brand = (req.body.brand || 'booking').toLowerCase(); // 'booking' | 'agoda' | 'expedia'
     const review = (req.body.review || 'review').toLowerCase(); // 'review' | 'no-review'
 
     if (!req.file) {
@@ -79,7 +79,13 @@ app.post('/start', upload.single('inputFile'), (req, res) => {
 
     // Build args
     const args = [path.join(projectRoot, 'server.js')];
-    if (brand === 'agoda') args.push('--agoda'); else args.push('--booking');
+    if (brand === 'agoda') {
+      args.push('--agoda');
+    } else if (brand === 'expedia') {
+      args.push('--expedia');
+    } else {
+      args.push('--booking');
+    }
     if (review === 'no-review') args.push('--no-review'); else args.push('--review');
 
     const child = spawn(process.execPath, args, {
