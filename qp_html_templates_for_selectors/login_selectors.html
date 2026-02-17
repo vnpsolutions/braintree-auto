@@ -1,0 +1,162 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum ePay</title>
+
+    <link rel="icon" type="image/x-icon" href="/themes/QP/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/themes/QP/images/favicon.ico">
+
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/themes/QP/site.css">
+    <link href="/css/spinner.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <link rel="stylesheet" href="/themes/QP/login_v2.css">
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header"></div>
+
+        </div>
+    </div>
+
+
+    <div class="login-container">
+    <div class="login-wrapper" id="loginWrapper" onload="ReloadLogin();" style="display: flex;">
+        <div class="l-side">
+            <img class="bg-img" src="/themes/QP/images/login-bg.svg" alt="Login background">
+        </div>
+        <div class="r-side">
+            <div class="r-side-wrapper">
+                <img class="logo" src="/themes/QP/images/logo_stacked.png" alt="Quantum logo">
+                <h1 class="login-title">Login</h1>
+                <div class="login-card-description">
+                    Sign in to your  <b>Quantum ePay Account</b>
+                </div>
+                <div class="login-form">
+                    <form action="#!">
+                        <div class="form-group">
+                            <label for="Username">Username</label>
+                            <input type="text" name="Username" id="Username" class="form-control" placeholder="Enter your username" data-val="true" data-val-required="The Username field is required." value="">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="Password">Password</label>
+                            <div class="input-group mb-3">
+                                <input type="password" name="Password" id="Password" class="form-control" placeholder="***********" data-val="true" data-val-required="The Password field is required.">
+                                <div class="input-group-append">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--feather eye-off" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" id="eyeOff" data-icon="feather:eye-off" onclick="showPassword('text')" style="display: block;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--feather eye" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" id="eye" data-icon="feather:eye" onclick="showPassword('password')" style="display: none;"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M1 12s4-8 11-8s11 8 11 8s-4 8-11 8s-11-8-11-8"></path><circle cx="12" cy="12" r="3"></circle></g></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="forgot-link">
+                            <a class="forgot-password-link" href="/Account/ForgotPassword?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3DQVue%26redirect_uri%3Dhttps%253A%252F%252Fgateway.quantumepay.com%252Fauth%252Fsuccess%26response_type%3Dcode%26scope%3Dopenid%2520profile%2520api1%2520qscope%2520payments.creditcard%26state%3Deedc63897d614231a119d1f6f02ce4b7%26code_challenge%3DsoxaVMcw6ROgJab8IziNTQpAOvPje34Lv8CzLsTWP3g%26code_challenge_method%3DS256%26response_mode%3Dquery">Forgot password</a>
+                        </div>
+
+                        <div class="login">
+                            <button name="login" id="login" class="btn btn-primary btn-block login-btn mb-4" type="button" onclick="Login();">
+                                <div class="spinner-border text-light" role="status" id="loginLoading" style="display: none;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <span id="loginLabel">Sign in</span>
+                            </button>
+                        </div>
+
+                        <div><span id="txtValidationMsg" style="color:red"></span></div>
+                        <input type="hidden" id="ReturnUrl" name="ReturnUrl" value="/connect/authorize/callback?client_id=QVue&amp;redirect_uri=https%3A%2F%2Fgateway.quantumepay.com%2Fauth%2Fsuccess&amp;response_type=code&amp;scope=openid%20profile%20api1%20qscope%20payments.creditcard&amp;state=eedc63897d614231a119d1f6f02ce4b7&amp;code_challenge=soxaVMcw6ROgJab8IziNTQpAOvPje34Lv8CzLsTWP3g&amp;code_challenge_method=S256&amp;response_mode=query">
+                        <input type="hidden" data-val="true" data-val-required="The IsoItemId field is required." id="IsoItemId" name="IsoItemId" value="00000000-0000-0000-0000-000000000000">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .eye-off, .eye {
+        margin:0.6rem;
+        border-color: #d0d5dd !important;
+        color: #475467 !important;
+        border-left: none;
+    }
+
+    .input-group-append {
+        background-color: white;
+        border-top: 1px solid #D0D5DD;
+        border-bottom: 1px solid #D0D5DD;
+        border-right: 1px solid #D0D5DD;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .forgot-link > a {
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+
+    input[id="Username"] {
+        border-radius: 8px;
+        border: 1px solid #D0D5DD;
+        background: #FFF;
+    }
+
+    input[id="Password"] {
+        border-radius: 8px;
+        border-top: 1px solid  #D0D5DD;
+        border-bottom: 1px solid #D0D5DD;
+        border-left: 1px solid #D0D5DD;
+        background:  #FFF;
+    }
+
+    div.login-card-description{
+        color: #475467;
+        text-align: center;
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
+
+    .login-btn{
+        border-radius:  8px;
+        border: 1px solid  #06F;
+        background: #06F;
+    }
+
+</style>
+
+<script type="text/javascript">
+    function showPassword(val) {
+        if(val == 'text'){
+            $("#Password").attr("type", "text")
+            $("#eyeOff").hide()
+            $("#eye").show()
+        }else{
+            $("#Password").attr("type", "password")
+            $("#eye").hide()
+            $("#eyeOff").show()
+        }
+    }
+ </script>
+
+
+    <script src="/js/login-redirect.js"></script>
+    <script src="/lib/jquery/jquery.min.js"></script>
+    <script src="/lib/bootstrap/js/popper.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/isoSwitcher.js"></script>
+    
+
+
+
+</body></html>

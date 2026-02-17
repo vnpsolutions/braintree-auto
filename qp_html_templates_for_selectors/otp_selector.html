@@ -1,0 +1,263 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum ePay</title>
+
+    <link rel="icon" type="image/x-icon" href="/themes/QP/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/themes/QP/images/favicon.ico">
+
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/themes/QP/site.css">
+    <link href="/css/spinner.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <link rel="stylesheet" href="/themes/QP/login_v2.css">
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header"></div>
+
+        </div>
+    </div>
+
+
+    
+<div class="login-container">
+    <div class="login-wrapper">
+        <div class="l-side">
+            <img class="bg-img" src="/themes/QP/images/login-bg.svg" alt="Login background">
+        </div>
+        <div class="r-side">
+            <div class="r-side-wrapper">
+                <img class="logo" src="/themes/QP/images/logo_stacked.png" alt="Quantum logo">
+                <h1 class="login-title">Enter the two-factor</h1>
+                <h1 class="login-title">authorization code</h1>
+                <p class="login-card-description">We've sent a code to DOMAINS@VNPSOLUTIONS.COM</p>
+
+                <div class="login-form">
+                     <div class="form-wrapper">
+                        <div id="inputs" class="otp-field">
+                            <input id="code1" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                            <input id="code2" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                            <input id="code3" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                            <input id="code4" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                            <input id="code5" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                            <input id="code6" class="input" type="text" inputmode="numeric" maxlength="1" placeholder="0">
+                        </div>
+                    </div>
+
+                  <div class="remember">
+                          <div class="radio-content">
+                              <input type="radio" id="rememberDevice" name="remember_radio" value="true">                    
+                              <label> Remember this browser for 30 days</label>
+                               <span class="subtitle">Only choose this option if you are on a trusted device.</span> 
+                          </div>
+                    </div> 
+
+
+                    <div class="submit-button">
+                            <button name="login" id="login" class="btn btn-block login-btn mb-4 btn-primary" type="button" onclick="confirm();">
+                                <div class="spinner-border text-light" role="status" id="loginLoading" style="display: none;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <span id="loginLabel">Submit</span>
+                            </button>
+                    </div>
+
+                    <div class="bottom-link">
+                        <a id="resendCode" href="#" onclick="resend2FACode();">Resend Code</a>
+                    </div>
+
+                    <input type="hidden" name="q" id="q" value="9dbff8cf-e1bf-4681-9374-31e9c2fcec85">
+                    <input type="hidden" name="redirectUrl" id="redirectUrl" value="/connect/authorize/callback?client_id=QVue&amp;redirect_uri=https%3A%2F%2Fgateway.quantumepay.com%2Fauth%2Fsuccess&amp;response_type=code&amp;scope=openid%20profile%20api1%20qscope%20payments.creditcard&amp;state=8d0b21f948b94a2c92d55786d8c02f26&amp;code_challenge=nx_bIXcQ3ppFo_-Npo_p2k_Er6jLM1zEqfixfxPV2pQ&amp;code_challenge_method=S256&amp;response_mode=query">
+   
+                    <div><span class="text-danger pull-right" id="txtValidationMsg"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style type="text/css">
+
+
+.submit-button {
+    text-align: center;
+}
+
+.bottom-link {
+    margin-top: 3rem;
+    font-size: 0.875rem;
+    text-align: center;
+        
+    a {
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+}
+
+ .form-wrapper 
+ {
+    .otp-field 
+    {
+        margin-top: 3rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+
+        input 
+        {
+            min-height: 4rem;
+            width: 2.75rem;
+            padding: 0.125rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d0d5dd;
+            box-shadow: 0 1px 2px 0 rgb(16 24 40 / 5%);
+            margin-right: 0.5rem;
+            font-weight: 600;
+            font-size: 1.875rem;
+
+            &:last-child {
+               margin-right: 0;
+            }
+
+            &:focus {
+                outline: none;
+               box-shadow: 0 0 0 4px #c2daff;
+               border: 1px solid #06f;
+            }
+        }
+    }
+ }
+
+    ::placeholder {
+        color: #d0d5dd;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+    }
+
+    .remember {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-evenly;
+        
+         .radio-content {
+            margin-left: 0.7rem;
+            margin-top: 0.15rem;
+         }
+      
+        label
+        {
+            font-weight: 600;
+            color: #667085;
+            font-size: 0.75rem;
+        }
+
+        .subtitle {
+            display: block;
+            color: #475467;
+            font-size: 0.75rem;
+            margin-top: -0.3125rem;
+        }
+
+    } 
+
+</style>
+
+
+<script type="text/javascript">
+
+    //var code;
+
+    const inputs = document.getElementById("inputs");
+  
+    document.getElementById('code1').addEventListener('paste', (e) => {
+
+
+        var pastedData = e.clipboardData?.getData('text')
+        if (!pastedData || isNaN(parseInt(pastedData))) {
+            e.preventDefault()
+            e.stopPropagation()
+            return
+        }
+
+        var codes = pastedData.split('')
+        if (codes.length > 6) {
+            codes.splice(6)
+        }
+
+
+        document.getElementById('code1').value = codes[0] ?? ''
+        document.getElementById('code2').value = codes[1] ?? ''
+        document.getElementById('code3').value = codes[2] ?? ''
+        document.getElementById('code4').value = codes[3] ?? ''
+        document.getElementById('code5').value = codes[4] ?? ''
+        document.getElementById('code6').value = codes[5] ?? ''
+
+        //code = codes.join('')
+        //document.getElementById('code1').value.blur()
+
+        e.preventDefault()
+        e.stopPropagation()
+
+    });
+
+
+    inputs.addEventListener("input", function (e) {
+        const target = e.target;
+        const val = target.value;
+
+        if (isNaN(val)) {
+            target.value = "";
+            return;
+        }
+
+ 
+        if (val != "") {
+            const next = target.nextElementSibling;
+            if (next) {
+                next.focus();
+            }
+
+        }
+    });
+
+    inputs.addEventListener("keyup", function (e) {
+        const target = e.target;
+        const key = e.key.toLowerCase();
+
+        if (key == "backspace" || key == "delete") {
+            target.value = "";
+            const prev = target.previousElementSibling;
+            if (prev) {
+                prev.focus();
+            }
+            return;
+        }
+    });          
+</script>
+    <script src="/js/login-redirect.js"></script>
+    <script src="/lib/jquery/jquery.min.js"></script>
+    <script src="/lib/bootstrap/js/popper.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/isoSwitcher.js"></script>
+    
+
+
+
+</body></html>
