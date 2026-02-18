@@ -8,6 +8,8 @@
 
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
+require('dotenv').config();
 
 function now() {
   return new Date().toISOString();
@@ -32,6 +34,124 @@ async function importPuppeteer() {
 // CLI flags
 const hasFlag = (flag) => process.argv.includes(flag);
 const REVIEW_MODE = hasFlag('--review') && !hasFlag('--no-review') ? true : (hasFlag('--no-review') ? false : true);
+
+// Google OAuth/Gmail
+let gmailClient = null;
+async function ensureGmailAuth() {
+  const { google } = require('googleapis');
+  const OAUTH_CLIENT_ID = process.env.OAUTH_CLIENT_ID;
+  const OAUTH_CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET;
+  if (!OAUTH_CLIENT_ID || !OAUTH_CLIENT_SECRET) {
+    throw new Error('Missing OAUTH_CLIENT_ID or OAUTH_CLIENT_SECRET in .env');
+  }
+  const redirectUri = 'http://localhost:3000/oauth2callback';
+  const oAuth2Client = new google.auth.OAuth2(OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, redirectUri);
+  const tokenPath = path.join(process.cwd(), '.qp_gmail_token.json');
+  // Load token if present
+  if (fs.existsSync(tokenPath)) {
+    try {
+      const tok = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
+      oAuth2Client.setCredentials(tok);
+      gmailClient = google.gmail({ version: 'v1', auth: oAuth2Client });
+      console.log('[%s] Loaded existing Gmail token.', now());
+      return;
+    } catch (_) {
+      // fallthrough to new auth
+    }
+  }
+  // Start local server to capture code
+  const server = http.createServer(async (req, res) => {
+    if (req.url.startsWith('/oauth2callback')) {
+      const urlObj = new URL(req.url, redirectUri);
+      const code = urlObj.searchParams.get('code');
+      try {
+        const { tokens } = await oAuth2Client.getToken(code);
+        oAuth2Client.setCredentials(tokens);
+        fs.writeFileSync(tokenPath, JSON.stringify(tokens, null, 2));
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Authorization complete. You can close this tab and return to the app.');
+        gmailClient = google.gmail({ version: 'v1', auth: oAuth2Client });
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end(`Auth failed: ${e.message}`);
+      } finally {
+        server.close();
+      }
+    } else {
+      res.writeHead(404); res.end();
+    }
+  });
+  await new Promise((resolve) => server.listen(3000, '0.0.0.0', resolve));
+  const scopes = ['https://www.googleapis.com/auth/gmail.readonly', 'openid', 'email'];
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes,
+    prompt: 'consent',
+  });
+  console.log('[%s] Open this URL to authorize Gmail:\n%s', now(), authUrl);
+  console.log('[%s] Waiting for OAuth completion...', now());
+  // Wait until gmailClient is set by callback
+  const deadline = Date.now() + 5 * 60 * 1000;
+  // eslint-disable-next-line no-constant-condition
+  while (!gmailClient) {
+    if (Date.now() > deadline) throw new Error('OAuth timed out.');
+    await sleep(500);
+  }
+}
+
+async function fetchOtpFromGmail(expectUsername) {
+  if (!gmailClient) return '';
+  const { google } = require('googleapis');
+  try {
+    // Wait 60s before checking as requested
+    console.log('[%s] Waiting 60s before checking Gmail for OTP...', now());
+    await sleep(60000);
+    // Search last 5 messages from quantum
+    const q = 'from:donotreply@quantumepay.com newer_than:1d';
+    const list = await gmailClient.users.messages.list({
+      userId: 'me',
+      q,
+      maxResults: 5,
+    });
+    const messages = list.data.messages || [];
+    for (const m of messages) {
+      const full = await gmailClient.users.messages.get({
+        userId: 'me',
+        id: m.id,
+        format: 'full',
+      });
+      // Extract plain text from payload
+      const payload = full.data.payload || {};
+      let body = '';
+      const extract = (part) => {
+        if (!part) return;
+        if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+          const buff = Buffer.from(part.body.data, 'base64');
+          body += buff.toString('utf8') + '\n';
+        }
+        if (part.parts) part.parts.forEach(extract);
+      };
+      extract(payload);
+      if (!body) {
+        // fallback to snippet
+        body = full.data.snippet || '';
+      }
+      const hiMatch = body.match(/Hi\s+([A-Za-z0-9_-]+),/i);
+      if (hiMatch && expectUsername && hiMatch[1].toLowerCase() !== String(expectUsername).toLowerCase()) {
+        continue; // not our account
+      }
+      const codeMatch = body.match(/Authentication code is\s+(\d{4,8})/i) || body.match(/\b(\d{6})\b/);
+      if (codeMatch) {
+        const code = codeMatch[1];
+        console.log('[%s] Found OTP code: %s', now(), code);
+        return code;
+      }
+    }
+  } catch (e) {
+    console.warn('[%s] Gmail fetch error: %s', now(), e && e.message ? e.message : String(e));
+  }
+  return '';
+}
 
 function readFirstEligibleRowFromExcel(filePath) {
   // eslint-disable-next-line global-require
@@ -519,7 +639,7 @@ async function fillSaleForm(page, row, rowIndex) {
   }, { timeout: 1000 }).catch(() => {});
 
   // Zip
-  await setInputValue(page, 'input[name="account_billing_address_postal_code"].input', String(zip || '').replace(/\D+/g, ''), { delay: 10, verify: false });
+  await setInputValue(page, 'input[name="account_billing_address_postal_code"].input', String(zip || '').replace(/\D+/g, ''), { delay: 25, verify: false });
 
   // Expand Order Information if collapsed
   await page.evaluate(() => {
@@ -661,6 +781,41 @@ async function performLoginFlow(page, username, password) {
     }
   }
   if (onOtpPage) {
+    // Try to fetch OTP from Gmail after 60s and auto-submit
+    const code = await fetchOtpFromGmail(username);
+    if (code) {
+      try {
+        // Type into either single input or multiple boxes
+        const multi = await page.evaluate(() => {
+          const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"]'));
+          const oneChar = inputs.filter(el => el.getAttribute('maxlength') === '1');
+          return oneChar.length >= 4;
+        });
+        if (multi) {
+          // Focus the first one-digit box and type sequentially
+          await page.evaluate(() => {
+            const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"]'))
+              .filter(el => el.getAttribute('maxlength') === '1');
+            if (inputs[0]) inputs[0].focus();
+          });
+          for (const ch of String(code)) {
+            await page.keyboard.type(ch, { delay: 80 });
+          }
+        } else {
+          // Find a generic OTP/code input
+          const sel = 'input#OTP, input[name*="otp"], input[id*="otp"], input[name*="code"], input[id*="code"], input[autocomplete="one-time-code"], input[type="tel"]';
+          await setInputValue(page, sel, String(code), { delay: 20, verify: true });
+        }
+        // Click submit/verify/continue
+        await page.evaluate(() => {
+          const btns = Array.from(document.querySelectorAll('button, input[type="submit"]'));
+          const b = btns.find(x => /submit|verify|continue/i.test((x.textContent || x.value || '').trim()));
+          if (b) (b).click();
+        }).catch(() => {});
+      } catch (_) {
+        // ignore and fall back to manual submit wait
+      }
+    }
     console.log('[%s] Waiting for OTP submission...', now());
     await Promise.race([
       page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 240000 }).catch(() => null),
@@ -698,6 +853,13 @@ async function maybeLoginIfNeeded(page, creds) {
 async function main() {
   const puppeteer = await importPuppeteer();
 
+  // Ensure Gmail OAuth before starting browser so OTP can be automated
+  try {
+    await ensureGmailAuth();
+  } catch (e) {
+    console.warn('[%s] Gmail OAuth skipped/failed: %s. OTP will require manual entry.', now(), e && e.message ? e.message : String(e));
+  }
+
   // Read inputs
   const inputPath = path.join(process.cwd(), 'qp_input_file.xlsx');
   console.log('[%s] Reading %s ...', now(), inputPath);
@@ -732,86 +894,9 @@ async function main() {
     console.log('[%s] Navigating to %s ...', now(), url);
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
 
-    // Robustly wait for login inputs across redirects/iframes
-    console.log('[%s] Waiting for login inputs (will allow redirects)...', now());
-    const loginFrame = await findFrameWithAllSelectors(page, ['#Username', '#Password'], 120000);
-    // Fill credentials
-    await loginFrame.click('#Username', { clickCount: 3 });
-    await loginFrame.type('#Username', username, { delay: 20 });
-    await loginFrame.click('#Password', { clickCount: 3 });
-    await loginFrame.type('#Password', password, { delay: 20 });
-
-    // Click Sign in
-    console.log('[%s] Clicking Sign in...', now());
-    try {
-      await loginFrame.waitForSelector('#login', { timeout: 30000 });
-      await Promise.race([
-        loginFrame.click('#login'),
-        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 90000 }).catch(() => null),
-      ]);
-    } catch (_) {
-      // Fallback: try form submit via evaluate
-      await loginFrame.evaluate(() => {
-        const btn = document.querySelector('#login');
-        if (btn) (btn).click();
-        const form = document.querySelector('form');
-        if (form && typeof (form).submit === 'function') (form).submit();
-      }).catch(() => {});
-      await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 90000 }).catch(() => null);
-    }
-
-    // Wait for either OTP page or successful login
-    console.log('[%s] Waiting for OTP page or post-login...', now());
-    const OTP_SELECTORS = [
-      'input#OTP', 'input[name*="otp"]', 'input[id*="otp"]',
-      'input[name*="twofactor"]', 'input[id*="twofactor"]',
-      'input[name*="code"]', 'input[id*="code"]',
-      'input[autocomplete="one-time-code"]',
-      'input[type="tel"]'
-    ];
-    const POST_LOGIN_HINTS = [
-      'a[href*="Logout"]', 'a[href*="logout"]',
-      'nav', '.navbar', '.sidebar', 'a[href*="Dashboard"]', 'h1'
-    ];
-
-    let onOtpPage = false;
-    let otpFrame = null;
-    try {
-      const res = await findFrameWithAnySelector(page, OTP_SELECTORS, 120000);
-      otpFrame = res.frame;
-      onOtpPage = true;
-      console.log('[%s] OTP input detected. Please enter your code manually and submit.', now());
-    } catch (_) {
-      // Maybe logged in directly (no OTP). Check for post-login hints quickly.
-      try {
-        await waitForAnySelector(page, POST_LOGIN_HINTS, 20000);
-        onOtpPage = false;
-      } catch (e) {
-        console.warn('[%s] Neither OTP nor post-login hints were detected in time.', now());
-      }
-    }
-
-    if (onOtpPage) {
-      // Wait until OTP inputs disappear (user submitted), or we detect navigation
-      console.log('[%s] Waiting for OTP submission...', now());
-      await Promise.race([
-        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 240000 }).catch(() => null),
-        (async () => {
-          const deadline = Date.now() + 240000;
-          while (Date.now() < deadline) {
-            try {
-              const stillThere = await otpFrame
-                .evaluate((sels) => sels.some((sel) => document.querySelector(sel)), OTP_SELECTORS)
-                .catch(() => false);
-              if (!stillThere) return;
-            } catch (_) {
-              return; // frame likely navigated
-            }
-            await sleep(750);
-          }
-        })()
-      ]);
-    }
+    // Use unified login flow (handles OTP via Gmail when available)
+    console.log('[%s] Performing login flow...', now());
+    await performLoginFlow(page, username, password);
 
     // Confirm dashboard readiness, then navigate to Sales page
     try {
@@ -883,8 +968,8 @@ async function main() {
       await fillSaleForm(page, row, idx);
 
       if (REVIEW_MODE) {
-        console.log('[%s] Review mode: holding 10s then hard-refreshing for next row...', now());
-        await sleep(10000);
+        console.log('[%s] Review mode: holding 15s then hard-refreshing for next row...', now());
+        await sleep(15000);
         processedReviewRows.add(idx);
         // Hard refresh via navigation to same URL (avoids execution context issues)
         const t0 = Date.now();
