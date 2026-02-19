@@ -1152,6 +1152,12 @@ async function main() {
       if (String(statusCell || '').trim()) {
         continue;
       }
+      // Skip rows where ReservationID (Column B) is empty (do not trigger relaunch/logout logic)
+      const reservationId = getCellValueByHeaders(row, ['ReservationID', 'Reservation ID', 'Order ID']);
+      if (!String(reservationId || '').trim()) {
+        console.log('[%s] Row %d skipped: empty ReservationID (Column B).', now(), idx + 1);
+        continue;
+      }
       // Determine next credentials for this row
       const rowUsername = getCellValueByHeaders(row, ['Quantam Pay Log In', 'Quantum Pay Log In', 'QP Login', 'Username']);
       const rowPassword = getCellValueByHeaders(row, ['QP Password', 'Quantum Pay Password', 'Password']);
