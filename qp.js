@@ -668,36 +668,265 @@ async function clickProcessPaymentAndConfirm(page) {
     const span = spans.find(s => (s.textContent || '').trim().toLowerCase().includes('process payment'));
     if (span) { const btn = span.closest('button'); if (btn) (btn).click(); }
   });
-  // Confirm modal button
-  await waitForElementWithText(page, 'button span', 'Process Payment', 60000);
-  await page.evaluate(() => {
-    const spans = Array.from(document.querySelectorAll('button span'));
-    const span = spans.find(s => (s.textContent || '').trim().toLowerCase() === 'process payment');
-    if (span) { const btn = span.closest('button'); if (btn) (btn).click(); }
-  });
+  // Allow confirm modal to render/settle (important)
+  await sleep(2500);
+
+  // Confirm modal "Process Payment" button (classes/ids may be dynamic; click by visible text)
+  await waitForConfirmModalAndClickButtonByText(page, 'Process Payment', 60000);
+  // Allow transaction complete modal to render/settle (important)
+  await sleep(2500);
+}
+
+async function waitForConfirmModalAndClickButtonByText(page, buttonText, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const clicked = await page.evaluate((txt) => {
+        const norm = (s) => (s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+        const target = norm(txt);
+        const isVisible = (el) => {
+          if (!el) return false;
+          const r = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          return r.width > 0 && r.height > 0 && style.visibility !== 'hidden' && style.display !== 'none' && style.opacity !== '0';
+        };
+        const clickInRoot = (root) => {
+          const candidates = Array.from(root.querySelectorAll('button'));
+          for (const btn of candidates) {
+            if (btn.getAttribute('aria-hidden') === 'true') continue;
+            if (btn.disabled) continue;
+            const label = norm(btn.innerText || btn.textContent || '');
+            if (!label) continue;
+            if (label === target || label.includes(target)) {
+              if (!isVisible(btn)) continue;
+              try { btn.scrollIntoView({ block: 'center', inline: 'center' }); } catch (_) {}
+              try { btn.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })); } catch (_) {}
+              try { btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); } catch (_) {}
+              try { btn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })); } catch (_) {}
+              try { btn.click(); } catch (_) {}
+              return true;
+            }
+          }
+          return false;
+        };
+        // Prefer confirm modal container if present
+        const roots = [
+          ...Array.from(document.querySelectorAll('.modal-container')),
+          ...Array.from(document.querySelectorAll('div[role="dialog"]')),
+          ...Array.from(document.querySelectorAll('.modal')),
+          document.body
+        ];
+        for (const root of roots) {
+          // Only interact with visible roots (avoid hidden/offscreen templates)
+          if (!isVisible(root)) continue;
+          if (clickInRoot(root)) return true;
+        }
+        return false;
+      }, buttonText);
+      if (clicked) return true;
+    } catch (_) {
+      // ignore transient navigation/context errors
+    }
+    await sleep(500);
+  }
+  throw new Error(`Timed out after ${timeoutMs}ms waiting to click confirm modal button: ${buttonText}`);
+}
+
+async function getTransactionHeaderH2Text(page) {
+  return page.evaluate(() => {
+    const h2 = document.querySelector('.title-wrap.transaction-header-container h2');
+    return (h2 && (h2.textContent || '').trim()) || '';
+  }).catch(() => '');
+}
+
+async function getFirstDialogH2Text(page) {
+  return page.evaluate(() => {
+    const scopes = Array.from(document.querySelectorAll('div[role="dialog"], .modal, body'));
+    for (const root of scopes) {
+      const h2s = Array.from(root.querySelectorAll('h2'));
+      for (const h of h2s) {
+        const t = (h.textContent || '').trim();
+        if (t) return t;
+      }
+    }
+    return '';
+  }).catch(() => '');
+}
+
+async function findFrameWithAnySelectorNow(page, selectors) {
+  try {
+    const frames = page.frames();
+    for (const frame of frames) {
+      // eslint-disable-next-line no-await-in-loop
+      const ok = await frame
+        .evaluate((sels) => sels.some((sel) => !!document.querySelector(sel)), selectors)
+        .catch(() => false);
+      if (ok) return frame;
+    }
+  } catch (_) {
+    // ignore
+  }
+  return null;
+}
+
+async function setInputValueInFrame(page, frame, selector, value, opts = {}) {
+  const { delay = 20, verify = true } = opts;
+  await frame.waitForSelector(selector, { visible: true, timeout: 30000 });
+  try {
+    await frame.click(selector, { clickCount: 3 });
+    for (let i = 0; i < 4; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await page.keyboard.press('Backspace').catch(() => {});
+      // eslint-disable-next-line no-await-in-loop
+      await page.keyboard.press('Delete').catch(() => {});
+    }
+  } catch (_) {}
+  try {
+    if (value) await frame.type(selector, value, { delay });
+  } catch (_) {}
+  if (!verify) return;
+  try {
+    const typed = await frame.$eval(selector, (el) => (el.value || '').toString());
+    if (!typed || typed.trim() === '') {
+      await frame.evaluate((sel, val) => {
+        const el = document.querySelector(sel);
+        if (el) {
+          el.value = val;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+          el.blur?.();
+        }
+      }, selector, value);
+    }
+  } catch (_) {}
+}
+
+async function solveOtpInFrameIfPresent(page, expectUsername) {
+  const OTP_SELECTORS = [
+    'input#OTP', 'input[name*="otp"]', 'input[id*="otp"]',
+    'input[name*="twofactor"]', 'input[id*="twofactor"]',
+    'input[name*="code"]', 'input[id*="code"]',
+    'input[autocomplete="one-time-code"]',
+    'input[type="tel"]'
+  ];
+  const otpFrame = await findFrameWithAnySelectorNow(page, OTP_SELECTORS);
+  if (!otpFrame) return false;
+
+  console.log('[%s] OTP step detected (no-review). Attempting auto-solve via Gmail...', now());
+  const code = await fetchOtpFromGmail(expectUsername);
+  if (!code) return true; // OTP exists but we couldn't fetch; user can enter manually
+
+  try {
+    const multi = await otpFrame.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"]'));
+      const oneChar = inputs.filter((el) => el.getAttribute('maxlength') === '1');
+      return oneChar.length >= 4;
+    }).catch(() => false);
+
+    if (multi) {
+      await otpFrame.evaluate(() => {
+        const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"]'))
+          .filter((el) => el.getAttribute('maxlength') === '1');
+        if (inputs[0]) inputs[0].focus();
+      }).catch(() => {});
+      for (const ch of String(code)) {
+        // eslint-disable-next-line no-await-in-loop
+        await page.keyboard.type(ch, { delay: 80 });
+      }
+    } else {
+      const sel = 'input#OTP, input[name*="otp"], input[id*="otp"], input[name*="code"], input[id*="code"], input[autocomplete="one-time-code"], input[type="tel"]';
+      await setInputValueInFrame(page, otpFrame, sel, String(code), { delay: 20, verify: true });
+    }
+
+    await otpFrame.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button, input[type="submit"]'));
+      const b = btns.find((x) => /submit|verify|continue/i.test((x.textContent || x.value || '').trim()));
+      if (b) (b).click();
+    }).catch(() => {});
+  } catch (_) {
+    // ignore; user can still solve manually
+  }
+
+  return true;
 }
 
 async function waitForTransactionStatusModal(page, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     try {
-      const text = await page.evaluate(() => {
-        // look for modal h2
-        const scopes = Array.from(document.querySelectorAll('div[role=\"dialog\"], .modal, body'));
-        for (const root of scopes) {
-          const h2s = Array.from(root.querySelectorAll('h2'));
-          for (const h of h2s) {
-            const t = (h.textContent || '').trim();
-            if (t) return t;
-          }
-        }
-        return '';
-      });
-      if (text) return text;
+      // Prefer the transaction modal header container (more specific/accurate)
+      let text = await getTransactionHeaderH2Text(page);
+      if (!text) text = await getFirstDialogH2Text(page);
+      if (text) {
+        // Let modal settle to avoid reading transient/incorrect text
+        await sleep(2000);
+        let text2 = await getTransactionHeaderH2Text(page);
+        if (!text2) text2 = await getFirstDialogH2Text(page);
+        return (text2 || text);
+      }
     } catch (_) {}
     await sleep(500);
   }
   return '';
+}
+
+async function waitForTransactionStatusModalNoReview(page, expectUsername, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let otpAttempted = false;
+  while (Date.now() < deadline) {
+    let text = await getTransactionHeaderH2Text(page);
+    if (!text) text = await getFirstDialogH2Text(page);
+    if (text) {
+      await sleep(2000);
+      let text2 = await getTransactionHeaderH2Text(page);
+      if (!text2) text2 = await getFirstDialogH2Text(page);
+      return (text2 || text);
+    }
+
+    if (!otpAttempted) {
+      const otpFrame = await findFrameWithAnySelectorNow(page, [
+        'input#OTP', 'input[name*="otp"]', 'input[id*="otp"]',
+        'input[name*="twofactor"]', 'input[id*="twofactor"]',
+        'input[name*="code"]', 'input[id*="code"]',
+        'input[autocomplete="one-time-code"]',
+        'input[type="tel"]'
+      ]);
+      if (otpFrame) {
+        otpAttempted = true;
+        // best-effort auto solve (may still require manual OTP)
+        await solveOtpInFrameIfPresent(page, expectUsername);
+      }
+    }
+
+    await sleep(500);
+  }
+  return '';
+}
+
+async function closeTransactionCompleteModal(page) {
+  // Prefer the explicit close button in the transaction completed modal
+  try {
+    await page.waitForFunction(() => {
+      const btn = document.querySelector('button.v-modal-close[aria-label="close"]');
+      if (!btn) return false;
+      const r = btn.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    }, { timeout: 60000 });
+    // Let modal settle before interacting (important)
+    await sleep(2000);
+    await page.evaluate(() => {
+      const btn = document.querySelector('button.v-modal-close[aria-label="close"]');
+      if (!btn) return;
+      try { btn.scrollIntoView({ block: 'center', inline: 'center' }); } catch (_) {}
+      try { btn.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })); } catch (_) {}
+      try { btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); } catch (_) {}
+      try { btn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })); } catch (_) {}
+      btn.click?.();
+    });
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 async function logoutIfNeededAndRelogin(page, currentCreds, nextCreds, descriptor, confirmCell, doLogin) {
@@ -992,7 +1221,7 @@ async function main() {
       // No-review: submit
       console.log('[%s] Submitting payment...', now());
       await clickProcessPaymentAndConfirm(page);
-      const statusText = await waitForTransactionStatusModal(page, 180000);
+      const statusText = await waitForTransactionStatusModalNoReview(page, currentCreds.username, 180000);
       console.log('[%s] Transaction status: %s', now(), statusText || 'N/A');
       try {
         writeAssociteChargeStatus({ wb, ws, sheetName }, idx, statusText || '');
@@ -1000,9 +1229,36 @@ async function main() {
         console.warn('[%s] Failed to write status for row %d: %s', now(), idx + 1, e && e.message ? e.message : String(e));
       }
 
-      // Close modal if possible and return to sale page for next iteration
-      await page.keyboard.press('Escape').catch(() => {});
-      await ensureOnSalePage(page);
+      // Close transaction complete modal and confirm we're back on sale page
+      const closed = await closeTransactionCompleteModal(page);
+      if (!closed) {
+        await page.keyboard.press('Escape').catch(() => {});
+      }
+      // Validate return to sale page (card input is a good signal)
+      await Promise.race([
+        page.waitForSelector('input[name="CardNumber"].input', { timeout: 60000 }).catch(() => {}),
+        (async () => { await ensureOnSalePage(page); })()
+      ]).catch(() => {});
+
+      // Match review-mode pacing: hold 15s then hard-refresh and re-stabilize for next row
+      console.log('[%s] No-review: holding 15s then hard-refreshing for next row...', now());
+      await sleep(15000);
+      const t0 = Date.now();
+      const refreshed = await hardRefresh(page);
+      console.log('[%s] Hard refresh done (ok=%s) in %dms', now(), refreshed, Date.now() - t0);
+
+      console.log('[%s] Checking if login needed...', now());
+      const l0 = Date.now();
+      await maybeLoginIfNeeded(page, currentCreds);
+      console.log('[%s] maybeLoginIfNeeded done in %dms', now(), Date.now() - l0);
+
+      console.log('[%s] Ensuring Sale page...', now());
+      const s0 = Date.now();
+      await ensureOnSalePage(page, { buttonTimeoutMs: 5000, navTimeoutMs: 5000, saleTimeoutMs: 5000 }).catch(() => {});
+      console.log('[%s] ensureOnSalePage done in %dms', now(), Date.now() - s0);
+
+      // Explicitly wait for Card Number field so the next iteration can start filling immediately (short timeout)
+      await page.waitForSelector('input[name="CardNumber"].input', { timeout: 5000 }).catch(() => {});
     }
   } catch (err) {
     exitCode = 1;
