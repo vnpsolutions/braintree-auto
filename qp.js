@@ -426,6 +426,59 @@ async function hardRefresh(page) {
   return false;
 }
 
+async function waitForUrlToStabilize(page, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let last = '';
+  let stableForMs = 0;
+  while (Date.now() < deadline) {
+    let u = '';
+    try { u = page.url() || ''; } catch (_) { u = ''; }
+    if (u && u === last) {
+      stableForMs += 300;
+      if (stableForMs >= 1200) return u;
+    } else {
+      last = u;
+      stableForMs = 0;
+    }
+    await sleep(300);
+  }
+  return last;
+}
+
+async function safeGotoWithRedirects(page, url, opts = {}) {
+  const {
+    timeoutMs = 120000,
+    maxAttempts = 4,
+    settleTimeoutMs = 12000,
+  } = opts;
+
+  const deadline = Date.now() + timeoutMs;
+  let lastErr = null;
+
+  for (let attempt = 1; attempt <= maxAttempts && Date.now() < deadline; attempt += 1) {
+    const remaining = Math.max(5000, deadline - Date.now());
+    try {
+      console.log('[%s] goto attempt %d/%d -> %s', now(), attempt, maxAttempts, url);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: remaining });
+      // Important: allow for 2-3 redirects that happen after DOMContentLoaded
+      await waitForUrlToStabilize(page, Math.min(settleTimeoutMs, deadline - Date.now()));
+      return true;
+    } catch (e) {
+      lastErr = e;
+      const msg = e && e.message ? e.message : String(e);
+      // Common transient error during redirect chains / navigation races
+      const transient = /Execution context was destroyed|Cannot find context with specified id|net::ERR_ABORTED|Navigation failed because/i.test(msg);
+      console.warn('[%s] goto failed (attempt %d): %s', now(), attempt, msg);
+      if (!transient) {
+        // still retry a couple times, but with a short delay
+      }
+      await sleep(1200);
+    }
+  }
+
+  throw lastErr || new Error(`Failed to navigate to ${url}`);
+}
+
 async function setInputValue(page, selector, value, opts = {}) {
   const { delay = 20, verify = true, method = 'type' } = opts;
   await page.waitForSelector(selector, { visible: true, timeout: 30000 });
@@ -1121,7 +1174,7 @@ async function main() {
     let page = await browser.newPage();
     const url = 'https://gateway.quantumepay.com/';
     console.log('[%s] Navigating to %s ...', now(), url);
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await safeGotoWithRedirects(page, url, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 15000 });
 
     // Use unified login flow (handles OTP via Gmail when available)
     console.log('[%s] Performing login flow...', now());
@@ -1189,7 +1242,7 @@ async function main() {
         page = await browser.newPage();
         const url = 'https://gateway.quantumepay.com/';
         console.log('[%s] Navigating to %s ...', now(), url);
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 }).catch(() => {});
+        await safeGotoWithRedirects(page, url, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 15000 }).catch(() => {});
         await performLoginFlow(page, nextCreds.username, nextCreds.password);
         await ensureOnSalePage(page);
         currentCreds = { ...nextCreds };
