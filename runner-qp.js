@@ -229,6 +229,12 @@ app.get('/download', (req, res) => {
   return res.download(current.outputFile, downloadName);
 });
 
+app.get('/download-autosave', (req, res) => {
+  const qpInputPath = path.join(projectRoot, 'qp_input_file.xlsx');
+  if (!fs.existsSync(qpInputPath)) return res.status(404).send('No auto-saved file available');
+  return res.download(qpInputPath, 'qp_input_file.xlsx');
+});
+
 app.listen(PORT, () => {
   if (requestedPort === 3000) {
     console.warn('PORT=3000 would conflict with Gmail OAuth callback. Using port 3001 instead.');

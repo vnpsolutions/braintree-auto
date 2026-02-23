@@ -21,3 +21,23 @@ button#startBtn:hover{transform:translateY(-1px);opacity:.95}
 .btn-secondary[aria-disabled="true"]{opacity:.5;pointer-events:none}
 button.btn-secondary{cursor:pointer}
 
+.tooltip{position:relative}
+.tooltip::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:calc(100% + 10px);
+  background:#0b1220;
+  border:1px solid rgba(255,255,255,.12);
+  color:#e5e7eb;
+  padding:8px 10px;
+  border-radius:10px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  z-index:10;
+}
+.tooltip:hover::after{opacity:1}
