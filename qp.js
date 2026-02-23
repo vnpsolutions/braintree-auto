@@ -1067,6 +1067,7 @@ function shouldRelaunch(currentCreds, nextCreds, descriptor, confirmCell) {
 async function performLoginFlow(page, username, password) {
   // Find login frame
   const loginFrame = await findFrameWithAllSelectors(page, ['#Username', '#Password'], 120000);
+  await sleep(25000); //the secret of life - the secret sauce
   await loginFrame.click('#Username', { clickCount: 3 });
   await loginFrame.type('#Username', username, { delay: 20 });
   await loginFrame.click('#Password', { clickCount: 3 });
