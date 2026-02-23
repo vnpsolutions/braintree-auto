@@ -37,8 +37,14 @@ const REVIEW_MODE = hasFlag('--review') && !hasFlag('--no-review') ? true : (has
 
 // Post-login hints (used to detect dashboard vs OTP/login screens)
 const POST_LOGIN_HINTS = [
-  'a[href*="Logout"]', 'a[href*="logout"]',
-  'nav', '.navbar', '.sidebar', 'a[href*="Dashboard"]', 'h1'
+  // From captured dashboard DOM:
+  '.sidebar-layout',
+  '#app.app-wrapper',
+  '.main-sidebar',
+  '.app-header',
+  '.q-breadcrumb',
+  '.quick-sale-button',
+  'span.q-button-title'
 ];
 
 // Google OAuth/Gmail
@@ -1174,6 +1180,55 @@ async function maybeLoginIfNeeded(page, creds) {
   }
 }
 
+async function isLoginPagePresent(page) {
+  const frame = await findFrameWithAllSelectors(page, ['#Username', '#Password'], 1200).catch(() => null);
+  return Boolean(frame);
+}
+
+async function isDashboardLikely(page) {
+  return page.evaluate(() => {
+    const hasWrapper = !!(document.querySelector('.sidebar-layout')
+      || document.querySelector('#app.app-wrapper')
+      || document.querySelector('.main-sidebar')
+      || document.querySelector('.app-header'));
+    const hasQuickSale = Array.from(document.querySelectorAll('span.q-button-title'))
+      .some((el) => /quick sale/i.test((el.textContent || '').trim()));
+    const hasDashboardCrumb = Array.from(document.querySelectorAll('.q-breadcrumb .label'))
+      .some((el) => /dashboard/i.test((el.textContent || '').trim()));
+    return Boolean(hasWrapper && (hasQuickSale || hasDashboardCrumb));
+  }).catch(() => false);
+}
+
+async function waitForDashboardStable(page, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    // If login is present, we're definitely not stable on dashboard yet.
+    // eslint-disable-next-line no-await-in-loop
+    if (await isLoginPagePresent(page)) return false;
+    // eslint-disable-next-line no-await-in-loop
+    const ok = await isDashboardLikely(page);
+    if (ok) {
+      // quick stability check (avoid false positives during transitions)
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(1500);
+      // eslint-disable-next-line no-await-in-loop
+      if (await isLoginPagePresent(page)) return false;
+      // eslint-disable-next-line no-await-in-loop
+      const ok2 = await isDashboardLikely(page);
+      if (ok2) return true;
+    }
+    // eslint-disable-next-line no-await-in-loop
+    await sleep(500);
+  }
+  return false;
+}
+
+async function maybeLoginTwiceIfNeeded(page, creds, gapMs = 10000) {
+  await maybeLoginIfNeeded(page, creds);
+  await sleep(gapMs);
+  await maybeLoginIfNeeded(page, creds);
+}
+
 function isTransientExecutionContextError(err) {
   const msg = err && (err.message || err.stack) ? String(err.message || err.stack) : String(err);
   return /Execution context was destroyed|Cannot find context with specified id|Protocol error|Target closed|net::ERR_ABORTED|Navigation failed because/i.test(msg);
@@ -1230,11 +1285,11 @@ async function runOnce(puppeteer) {
     await performLoginFlow(page, username, password);
 
     // Confirm dashboard readiness, then navigate to Sales page
-    try {
-      await waitForAnySelector(page, POST_LOGIN_HINTS, 60000);
-      console.log('[%s] Post-login/dashboard detected. Waiting for Quick Sale button...', now());
-    } catch (_) {
-      console.log('[%s] Dashboard hints not strongly detected; proceeding to look for Quick Sale anyway.', now());
+    const dashOk = await waitForDashboardStable(page, 60000).catch(() => false);
+    if (dashOk) {
+      console.log('[%s] Dashboard appears stable.', now());
+    } else {
+      console.warn('[%s] Dashboard not confirmed stable yet; proceeding to Quick Sale detection.', now());
     }
 
     // Go to Sale page
@@ -1298,7 +1353,8 @@ async function runOnce(puppeteer) {
       }
 
       // Make sure we're on sale page before filling
-      await maybeLoginIfNeeded(page, currentCreds);
+      // Double-check login page (refresh can sometimes kick us back unexpectedly)
+      await maybeLoginTwiceIfNeeded(page, currentCreds, 10000);
       await ensureOnSalePage(page);
 
       // Fill sale form
