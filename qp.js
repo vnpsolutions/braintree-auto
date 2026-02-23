@@ -35,6 +35,12 @@ async function importPuppeteer() {
 const hasFlag = (flag) => process.argv.includes(flag);
 const REVIEW_MODE = hasFlag('--review') && !hasFlag('--no-review') ? true : (hasFlag('--no-review') ? false : true);
 
+// Post-login hints (used to detect dashboard vs OTP/login screens)
+const POST_LOGIN_HINTS = [
+  'a[href*="Logout"]', 'a[href*="logout"]',
+  'nav', '.navbar', '.sidebar', 'a[href*="Dashboard"]', 'h1'
+];
+
 // Google OAuth/Gmail
 let gmailClient = null;
 async function ensureGmailAuth() {
@@ -171,12 +177,43 @@ function readFirstEligibleRowFromExcel(filePath) {
     headers.find((h) => h.norm === 'associte charge status') // exact as provided (typo preserved)
     || headers.find((h) => h.norm.includes('associate') && h.norm.includes('status'))
     || null;
+  const reservationHeader =
+    headers.find((h) => h.norm === 'reservationid')
+    || headers.find((h) => h.norm === 'reservation id')
+    || headers.find((h) => h.norm.includes('reservation') && h.norm.includes('id'))
+    || null;
+
+  const valueByHeadersForRow = (rowObj, names) => {
+    for (const n of names) {
+      if (Object.prototype.hasOwnProperty.call(rowObj, n)) {
+        const v = (rowObj[n] ?? '').toString().trim();
+        if (v) return v;
+      }
+    }
+    const normalizedRow = Object.keys(rowObj).reduce((acc, k) => {
+      acc[normalize(k)] = (rowObj[k] ?? '').toString().trim(); return acc;
+    }, {});
+    for (const n of names) {
+      const v = normalizedRow[normalize(n)];
+      if (v) return v;
+    }
+    return '';
+  };
 
   let rowIndex = -1;
   if (statusHeader) {
     for (let i = 0; i < rows.length; i += 1) {
-      const val = (rows[i][statusHeader.raw] ?? '').toString().trim();
-      if (!val) { rowIndex = i; break; }
+      const statusVal = (rows[i][statusHeader.raw] ?? '').toString().trim();
+      if (statusVal) continue;
+      const reservationVal = reservationHeader
+        ? (rows[i][reservationHeader.raw] ?? '').toString().trim()
+        : valueByHeadersForRow(rows[i], ['ReservationID', 'Reservation ID']);
+      if (!reservationVal) continue;
+      const username = valueByHeadersForRow(rows[i], ['Quantam Pay Log In', 'Quantum Pay Log In', 'QP Login', 'Username']);
+      const password = valueByHeadersForRow(rows[i], ['QP Password', 'Quantum Pay Password', 'Password']);
+      if (!username || !password) continue;
+      rowIndex = i;
+      break;
     }
   }
 
@@ -187,17 +224,26 @@ function readFirstEligibleRowFromExcel(filePath) {
     for (let r = range.s.r + 1; r <= range.e.r; r += 1) {
       const addr = xlsx.utils.encode_cell({ r, c: 7 }); // H -> index 7
       const cell = ws[addr];
-      const val = cell ? String(cell.v ?? cell.w ?? '').trim() : '';
-      if (!val) {
-        // Build a row object for this line using headers if present
-        rowIndex = r - (range.s.r + 1);
-        break;
-      }
+      const statusVal = cell ? String(cell.v ?? cell.w ?? '').trim() : '';
+      if (statusVal) continue;
+      const reservationAddr = xlsx.utils.encode_cell({ r, c: 1 }); // B -> index 1
+      const reservationCell = ws[reservationAddr];
+      const reservationVal = reservationCell ? String(reservationCell.v ?? reservationCell.w ?? '').trim() : '';
+      if (!reservationVal) continue;
+
+      const candidateIndex = r - (range.s.r + 1);
+      const rowObj = rows[candidateIndex] || {};
+      const username = valueByHeadersForRow(rowObj, ['Quantam Pay Log In', 'Quantum Pay Log In', 'QP Login', 'Username']);
+      const password = valueByHeadersForRow(rowObj, ['QP Password', 'Quantum Pay Password', 'Password']);
+      if (!username || !password) continue;
+
+      rowIndex = candidateIndex;
+      break;
     }
   }
 
   if (rowIndex < 0) {
-    throw new Error('No eligible row found with empty "Associte Charge Status" (Column H).');
+    throw new Error('No eligible row found with empty "Associte Charge Status" (Column H) and filled ReservationID (Column B).');
   }
 
   const row = rows[rowIndex];
@@ -1043,10 +1089,6 @@ async function performLoginFlow(page, username, password) {
     'input[autocomplete="one-time-code"]',
     'input[type="tel"]'
   ];
-  const POST_LOGIN_HINTS = [
-    'a[href*="Logout"]', 'a[href*="logout"]',
-    'nav', '.navbar', '.sidebar', 'a[href*="Dashboard"]', 'h1'
-  ];
   let onOtpPage = false;
   let otpFrame = null;
   try {
@@ -1132,20 +1174,28 @@ async function maybeLoginIfNeeded(page, creds) {
   }
 }
 
-async function main() {
-  const puppeteer = await importPuppeteer();
+function isTransientExecutionContextError(err) {
+  const msg = err && (err.message || err.stack) ? String(err.message || err.stack) : String(err);
+  return /Execution context was destroyed|Cannot find context with specified id|Protocol error|Target closed|net::ERR_ABORTED|Navigation failed because/i.test(msg);
+}
 
-  // Ensure Gmail OAuth before starting browser so OTP can be automated
-  try {
-    await ensureGmailAuth();
-  } catch (e) {
-    console.warn('[%s] Gmail OAuth skipped/failed: %s. OTP will require manual entry.', now(), e && e.message ? e.message : String(e));
-  }
-
+async function runOnce(puppeteer) {
   // Read inputs
   const inputPath = path.join(process.cwd(), 'qp_input_file.xlsx');
   console.log('[%s] Reading %s ...', now(), inputPath);
-  const firstCreds = readFirstEligibleRowFromExcel(inputPath);
+
+  let firstCreds;
+  try {
+    firstCreds = readFirstEligibleRowFromExcel(inputPath);
+  } catch (e) {
+    const msg = e && e.message ? e.message : String(e);
+    if (/No eligible row found/i.test(msg)) {
+      console.log('[%s] No eligible rows remaining. Exiting.', now());
+      return { done: true, exitCode: 0 };
+    }
+    throw e;
+  }
+
   const { wb, ws, sheetName, rows } = readAllRowsFromExcel(inputPath);
   const { username, password } = firstCreds;
   console.log('[%s] Using credentials for Quantum Pay login.', now());
@@ -1169,7 +1219,6 @@ async function main() {
     ]
   });
 
-  let exitCode = 0;
   try {
     let page = await browser.newPage();
     const url = 'https://gateway.quantumepay.com/';
@@ -1206,7 +1255,7 @@ async function main() {
         continue;
       }
       // Skip rows where ReservationID (Column B) is empty (do not trigger relaunch/logout logic)
-      const reservationId = getCellValueByHeaders(row, ['ReservationID', 'Reservation ID', 'Order ID']);
+      const reservationId = getCellValueByHeaders(row, ['ReservationID', 'Reservation ID']);
       if (!String(reservationId || '').trim()) {
         console.log('[%s] Row %d skipped: empty ReservationID (Column B).', now(), idx + 1);
         continue;
@@ -1240,9 +1289,9 @@ async function main() {
           ]
         });
         page = await browser.newPage();
-        const url = 'https://gateway.quantumepay.com/';
-        console.log('[%s] Navigating to %s ...', now(), url);
-        await safeGotoWithRedirects(page, url, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 150000 }).catch(() => {});
+        const url2 = 'https://gateway.quantumepay.com/';
+        console.log('[%s] Navigating to %s ...', now(), url2);
+        await safeGotoWithRedirects(page, url2, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 15000 }).catch(() => {});
         await performLoginFlow(page, nextCreds.username, nextCreds.password);
         await ensureOnSalePage(page);
         currentCreds = { ...nextCreds };
@@ -1301,7 +1350,7 @@ async function main() {
 
       // Match review-mode pacing: hold 15s then hard-refresh and re-stabilize for next row
       console.log('[%s] No-review: holding 15s then hard-refreshing for next row...', now());
-      await sleep(1000);
+      await sleep(15000);
       const t0 = Date.now();
       const refreshed = await hardRefresh(page);
       console.log('[%s] Hard refresh done (ok=%s) in %dms', now(), refreshed, Date.now() - t0);
@@ -1319,18 +1368,54 @@ async function main() {
       // Explicitly wait for Card Number field so the next iteration can start filling immediately (short timeout)
       await page.waitForSelector('input[name="CardNumber"].input', { timeout: 5000 }).catch(() => {});
     }
-  } catch (err) {
-    exitCode = 1;
-    console.error('[%s] Error: %s', now(), err && err.stack ? err.stack : String(err));
+
+    return { done: true, exitCode: 0 };
   } finally {
     console.log('[%s] Closing browser...', now());
     try { /* eslint-disable no-unused-expressions */ (await 0), browser && (await browser.close()); } catch (e) { /* ignore */ }
-    process.exit(exitCode);
+  }
+}
+
+async function main() {
+  const puppeteer = await importPuppeteer();
+
+  // Ensure Gmail OAuth before starting browser so OTP can be automated
+  try {
+    await ensureGmailAuth();
+  } catch (e) {
+    console.warn('[%s] Gmail OAuth skipped/failed: %s. OTP will require manual entry.', now(), e && e.message ? e.message : String(e));
+  }
+
+  let attempt = 0;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    attempt += 1;
+    try {
+      console.log('[%s] Run attempt %d starting...', now(), attempt);
+      const res = await runOnce(puppeteer);
+      if (res && res.done) {
+        process.exit(res.exitCode || 0);
+      }
+      // Should not happen, but keep retrying
+      await sleep(2000);
+    } catch (err) {
+      const msg = err && err.stack ? err.stack : String(err);
+      console.error('[%s] Crash detected (attempt %d). Will relaunch and retry.\n%s', now(), attempt, msg);
+      if (isTransientExecutionContextError(err)) {
+        console.warn('[%s] Transient execution-context/navigation crash detected; retrying...', now());
+      }
+      await sleep(4000);
+    }
   }
 }
 
 main().catch((e) => {
   console.error('[%s] Fatal: %s', now(), e && e.stack ? e.stack : String(e));
-  process.exit(1);
+  console.error('[%s] Fatal in main bootstrap. Retrying in 10s...', now());
+  setTimeout(() => {
+    main().catch((err) => {
+      console.error('[%s] Fatal(retry): %s', now(), err && err.stack ? err.stack : String(err));
+    });
+  }, 10000);
 });
 
