@@ -459,7 +459,7 @@ async function safeGotoWithRedirects(page, url, opts = {}) {
     const remaining = Math.max(5000, deadline - Date.now());
     try {
       console.log('[%s] goto attempt %d/%d -> %s', now(), attempt, maxAttempts, url);
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: remaining });
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 100000 });
       // Important: allow for 2-3 redirects that happen after DOMContentLoaded
       await waitForUrlToStabilize(page, Math.min(settleTimeoutMs, deadline - Date.now()));
       return true;
@@ -1242,7 +1242,7 @@ async function main() {
         page = await browser.newPage();
         const url = 'https://gateway.quantumepay.com/';
         console.log('[%s] Navigating to %s ...', now(), url);
-        await safeGotoWithRedirects(page, url, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 15000 }).catch(() => {});
+        await safeGotoWithRedirects(page, url, { timeoutMs: 120000, maxAttempts: 5, settleTimeoutMs: 150000 }).catch(() => {});
         await performLoginFlow(page, nextCreds.username, nextCreds.password);
         await ensureOnSalePage(page);
         currentCreds = { ...nextCreds };
@@ -1301,7 +1301,7 @@ async function main() {
 
       // Match review-mode pacing: hold 15s then hard-refresh and re-stabilize for next row
       console.log('[%s] No-review: holding 15s then hard-refreshing for next row...', now());
-      await sleep(15000);
+      await sleep(1000);
       const t0 = Date.now();
       const refreshed = await hardRefresh(page);
       console.log('[%s] Hard refresh done (ok=%s) in %dms', now(), refreshed, Date.now() - t0);
