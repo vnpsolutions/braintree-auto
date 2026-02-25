@@ -145,8 +145,8 @@ app.post('/start', upload.single('inputFile'), (req, res) => {
     const originalBase = path.basename(uploadedPath, path.extname(uploadedPath));
     current.downloadName = `${originalBase}_qp_processed.xlsx`;
 
-    // qp.js expects qp_input_file.xlsx in cwd; keep cwd=projectRoot so Gmail token persists
-    const qpInputPath = path.join(projectRoot, 'qp_input_file.xlsx');
+    // qp.js expects current_list_qp_automation.xlsx in cwd; keep cwd=projectRoot so Gmail token persists
+    const qpInputPath = path.join(projectRoot, 'current_list_qp_automation.xlsx');
     fs.copyFileSync(uploadedPath, qpInputPath);
     current.outputFile = qpInputPath;
 
@@ -230,9 +230,9 @@ app.get('/download', (req, res) => {
 });
 
 app.get('/download-autosave', (req, res) => {
-  const qpInputPath = path.join(projectRoot, 'qp_input_file.xlsx');
+  const qpInputPath = path.join(projectRoot, 'current_list_qp_automation.xlsx');
   if (!fs.existsSync(qpInputPath)) return res.status(404).send('No auto-saved file available');
-  return res.download(qpInputPath, 'qp_input_file.xlsx');
+  return res.download(qpInputPath, 'current_list_qp_automation.xlsx');
 });
 
 app.listen(PORT, () => {
