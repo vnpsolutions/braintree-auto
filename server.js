@@ -23,8 +23,10 @@ const LOGIN_PAGE_LOAD_TIMEOUT_MS = Number(process.env.LOGIN_PAGE_LOAD_TIMEOUT_MS
 const POST_LOGIN_WAIT_TIMEOUT_MS = Number(process.env.POST_LOGIN_WAIT_TIMEOUT_MS || 10 * 60 * 1000); // 10 minutes
 const OTP_WAIT_TIMEOUT_MS = Number(process.env.OTP_WAIT_TIMEOUT_MS || 10 * 60 * 1000); // 10 minutes
 
-// Brand selection via CLI: --agoda or --booking (default booking)
-const BRAND = process.argv.includes('--agoda') ? 'agoda' : 'booking';
+// Brand selection via CLI: --agoda or --booking (default booking) or --expedia
+const BRAND = process.argv.includes('--agoda') ? 'agoda' 
+  : process.argv.includes('--expedia') ? 'expedia' 
+  : 'booking';
 const hasFlag = (flag) => process.argv.includes(flag);
 // Review mode: explicit --review, or default for agoda unless --no-review is passed
 const REVIEW_MODE = hasFlag('--review') || (BRAND === 'agoda' && !hasFlag('--no-review'));
@@ -414,11 +416,11 @@ async function main() {
         amount: valueByHeaders(['Amount']),
         orderId: valueByHeaders(['Reservation ID', 'Order ID']),
         customerFirstName: valueByHeaders(['Hotel Name', 'First Name']),
-        cardholderName: BRAND === 'agoda' ? 'Agoda Ltd.' : 'BOOKING.COM',
+        cardholderName: BRAND === 'agoda' ? 'Agoda Ltd.' : (BRAND === 'expedia' ? 'Expedia Group' : 'BOOKING.COM'),
         cardNumber: first4Digits && last12Digits ? `${first4Digits}${last12Digits}` : (first4Digits || last12Digits || ''),
         expirationDate: valueByHeaders(['Expiry', 'Expiration', 'Expiration Date (MM/YYYY)', 'Expiration Date', 'Exp Date']).replace(/\s+/g, ''),
         cvv: valueByHeaders(['CVV', 'Security Code', 'CVV2']),
-        billingPostalCode: BRAND === 'agoda' ? '80525' : '10118',
+        billingPostalCode: BRAND === 'agoda' ? '80525' : (BRAND === 'expedia' ? '98119' : '10118'),
         billingCompany: '',
         billingCountryName: 'United States of America'
       };
@@ -489,7 +491,7 @@ async function main() {
       try {
         await page.focus(FORM_SELECTORS.billingFirstName);
         await page.click(FORM_SELECTORS.billingFirstName, { clickCount: 3 });
-        await page.type(FORM_SELECTORS.billingFirstName, BRAND === 'agoda' ? 'Agoda Company Pte Ltd.' : 'Booking.com', { delay: 10 });
+        await page.type(FORM_SELECTORS.billingFirstName, BRAND === 'agoda' ? 'Agoda Company Pte Ltd.' : (BRAND === 'expedia' ? 'Expedia Inc.' : 'Booking.com'), { delay: 10 });
       } catch (_) {}
 
       // Agoda-only fields: Street Address and Region
@@ -503,6 +505,18 @@ async function main() {
           await page.focus(FORM_SELECTORS.billingRegion);
           await page.click(FORM_SELECTORS.billingRegion, { clickCount: 3 });
           await page.type(FORM_SELECTORS.billingRegion, 'Fort Collins, CO', { delay: 10 });
+        } catch (_) {}
+      } else if (BRAND === 'expedia') {
+        // Expedia-specific: Street Address and Region
+        try {
+          await page.focus(FORM_SELECTORS.billingStreet);
+          await page.click(FORM_SELECTORS.billingStreet, { clickCount: 3 });
+          await page.type(FORM_SELECTORS.billingStreet, '1111 Expedia Group Way W', { delay: 10 });
+        } catch (_) {}
+        try {
+          await page.focus(FORM_SELECTORS.billingRegion);
+          await page.click(FORM_SELECTORS.billingRegion, { clickCount: 3 });
+          await page.type(FORM_SELECTORS.billingRegion, 'Seattle, WA', { delay: 10 });
         } catch (_) {}
       }
       // Clear Billing Company
